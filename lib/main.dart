@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:flutter/services.dart';
+
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   runApp(const CyberSecurityApp());
 }
 
@@ -12,7 +17,7 @@ class CyberSecurityApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'CyberSecurity',
+      title: 'مستودع الأمن السيبراني',
       theme: ThemeData(
         fontFamily: 'Tajawal',
         scaffoldBackgroundColor: const Color(0xFF0F1B33),
@@ -27,6 +32,43 @@ class CyberSecurityApp extends StatelessWidget {
         ),
         textTheme: const TextTheme(
           bodyMedium: TextStyle(color: Colors.white70),
+          titleLarge: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF4ECDC4),
+          ),
+          titleMedium: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF4ECDC4),
+          ),
+          bodyLarge: TextStyle(
+            fontSize: 16,
+            color: Colors.white,
+            height: 1.6,
+          ),
+          bodySmall: TextStyle(
+            fontSize: 14,
+            color: Colors.white70,
+            height: 1.5,
+          ),
+        ).apply(
+          displayColor: Colors.white,
+          bodyColor: Colors.white,
+        ),
+        colorScheme: ColorScheme.dark(
+          primary: Color(0xFF4ECDC4),
+          secondary: Color(0xFF6C5CE7),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF4ECDC4),
+            foregroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          ),
         ),
       ),
       home: const Directionality(
@@ -45,7 +87,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
   late Animation<double> _scaleAnimation;
@@ -57,17 +100,19 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       duration: const Duration(seconds: 3),
       vsync: this,
     );
-
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.0, 0.8)),
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.3, 1.0, curve: Curves.easeOutCubic),
+      ),
     );
-
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: const Interval(0.4, 1.0)),
+    _scaleAnimation = Tween<double>(begin: 0.92, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.3, 1.0, curve: Curves.easeOutBack),
+      ),
     );
-
     _controller.forward();
-
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) {
         Navigator.pushReplacement(
@@ -86,6 +131,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -95,51 +141,86 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             colors: [Color(0xFF1E3A5F), Color(0xFF0F1B33)],
           ),
         ),
-        child: Stack(
-          children: [
-            FadeTransition(
-              opacity: _opacityAnimation,
-              child: ScaleTransition(
-                scale: _scaleAnimation,
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.shield, size: 140, color: Color(0xFF4ECDC4)),
-                      const SizedBox(height: 20),
-                      const Text(
-                        'أهلاً وسهلاً بكم في',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4ECDC4),
+        child: Center(
+          child: FadeTransition(
+            opacity: _opacityAnimation,
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1A2E4D),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Color(0xFF4ECDC4).withOpacity(0.4),
+                          width: 2,
                         ),
-                        textAlign: TextAlign.center,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF4ECDC4)
+                                .withOpacity(0.25),
+                            blurRadius: 24,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'CyberSecurity',
-                        style: TextStyle(
-                          fontSize: 52,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF4ECDC4),
-                          letterSpacing: 2,
-                        ),
-                        textAlign: TextAlign.center,
+                      child: const Icon(
+                        Icons.security,
+                        size: 72,
+                        color: Color(0xFF4ECDC4),
                       ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        'درعك الرقمي ضد التهديدات الإلكترونية',
-                        style: TextStyle(fontSize: 18, color: Colors.white70),
-                        textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    Text(
+                      'أهلاً وسهلاً بكم في',
+                      style: textTheme.titleLarge?.copyWith(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF4ECDC4),
                       ),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'مستودع الأمن السيبراني',
+                      style: textTheme.titleLarge?.copyWith(
+                            fontSize: 36,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                            letterSpacing: 1.0,
+                          ) ??
+                          const TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1.0,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'مركز الموارد، التدريب، والمحاكاة لحمايةك الرقمية',
+                      style: textTheme.bodyLarge?.copyWith(
+                        fontSize: 16,
+                        color: Colors.white70,
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -150,7 +231,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 class PathChoicePage extends StatelessWidget {
   const PathChoicePage({super.key});
 
-  // ✅ دالة لعرض نافذة معلومات عن التطبيق
   void _showAboutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -166,7 +246,7 @@ class PathChoicePage extends StatelessWidget {
           ),
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: const Text(
-            '🌟 عن تطبيق CyberSecurity',
+            '🌟 عن مستودع الأمن السيبراني',
             style: TextStyle(
               color: Colors.white,
               fontSize: 22,
@@ -175,115 +255,71 @@ class PathChoicePage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const CircleAvatar(
-              radius: 40,
-              backgroundColor: Color(0xFF4ECDC4),
-              child: Icon(Icons.security, size: 50, color: Colors.white),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'فاطم عامر',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF4ECDC4),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const CircleAvatar(
+                radius: 40,
+                backgroundColor: Color(0xFF4ECDC4),
+                child: Icon(Icons.security, size: 50, color: Colors.white),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'مطورة ومصممة هذا البرنامج',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white70,
-                fontStyle: FontStyle.italic,
+              const SizedBox(height: 16),
+              const Text(
+                'فاطم عامر',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF4ECDC4),
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const Divider(color: Colors.white30, height: 32),
-            const Text(
-              '🎯 هدف التطبيق:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+              const SizedBox(height: 8),
+              const Text(
+                'مطور/ة ومصممة هذا المستودع التعليمي',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white70,
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'تم تصميم تطبيق "CyberSecurity" لنشر التوعية الرقمية وحماية المستخدمين من المخاطر الإلكترونية مثل التصيد، الاختراق، والابتزاز. '
-              'يقدم التطبيق محتوى تعليميًا وتطبيقيًا بطريقة سهلة الاستخدام وتفاعلية، ومناسبة لكل الأعمار — خاصة الأطفال وأولياء الأمور.',
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.white70,
-                height: 1.6,
+              const Divider(color: Colors.white30, height: 32),
+              const Text(
+                '🎯 هدف المستودع:',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              '💡 ماذا ستستفيد من هذا التطبيق؟',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF4ECDC4),
+              const SizedBox(height: 12),
+              const Text(
+                'نقدم محتوى تعليميًا وتدريبيًا عمليًا لبناء مهارات الأمن السيبراني، مع أدوات لفحص الحسابات، محاكاة هجمات آمنة، ومسارات تعلم تفاعلية تشبه تجربة Duolingo.',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.white70,
+                  height: 1.6,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              '• قسم "الحماية الرقمية": ستتعلم أساسيات حماية نفسك وطفلك، وكيفية تأمين حساباتك وبطاقات الدفع، وتتعرف على التحذيرات الهامة لتجنب الوقوع ضحية للنصب.',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white70,
-                height: 1.5,
-              ),
-              textAlign: TextAlign.right,
-            ),
-            const Text(
-              '• قسم "التطبيق العملي": ستختبر معلوماتك من خلال أدوات تفاعلية مثل فحص قوة كلمة المرور، كشف الروابط الضارة، البطاقات التعليمية، وألعاب تقيس مستوى معرفتك.',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white70,
-                height: 1.5,
-              ),
-              textAlign: TextAlign.right,
-            ),
-            const Text(
-              '•  قسم "البوت الذكي": سوف يساعدك بشكل بسيط',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.white70,
-                height: 1.5,
-              ),
-              textAlign: TextAlign.right,
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              '🛡️ التطبيق هو درعك الرقمي. نهدف لبناء مجتمع واعٍ ومتمكن من مواجهة التهديدات الإلكترونية بثقة وأمان.',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF4ECDC4),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+            ],
+          ),
         ),
         actions: [
           Center(
             child: ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4ECDC4),
+                backgroundColor: Color(0xFF4ECDC4),
                 foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
               ),
               child: const Text(
                 'إغلاق',
@@ -292,7 +328,8 @@ class PathChoicePage extends StatelessWidget {
             ),
           ),
         ],
-        actionsPadding: const EdgeInsets.only(bottom: 16, right: 16, left: 16),
+        actionsPadding:
+            const EdgeInsets.only(bottom: 16, right: 16, left: 16),
       ),
     );
   }
@@ -302,12 +339,11 @@ class PathChoicePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('اختر مسارك'),
-        // ✅ إضافة زر المعلومات بجانب العنوان
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline, color: Colors.white),
             onPressed: () => _showAboutDialog(context),
-            tooltip: 'عن التطبيق',
+            tooltip: 'عن المستودع',
           ),
         ],
       ),
@@ -320,23 +356,32 @@ class PathChoicePage extends StatelessWidget {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildChoiceCard(
                 context: context,
-                title: 'الحماية الرقمية 🛡️',
-                subtitle: 'تعلم كيف تحمي نفسك من السرقة والخداع الإلكتروني',
-                icon: Icons.security,
-                color: const Color(0xFF4ECDC4),
-                nextPage: const AwarenessMenuPage(),
+                title: 'المساعد الذكي',
+                subtitle: 'اسألني أي شيء عن الأمن السيبراني (محترف ومتخصص)',
+                icon: Icons.smart_toy,
+                color: Color(0xFF4ECDC4),
+                nextPage: const CyberAssistantPage(),
               ),
               const SizedBox(height: 16),
               _buildChoiceCard(
                 context: context,
-                title: 'التطبيق العملي 💡',
-                subtitle: 'جرب ما تعلمته في بيئة آمنة',
+                title: 'مسار التعلم التفاعلي',
+                subtitle: 'تعلم وتمرّن بمستويات، تحديات، وألعاب تعليمية',
+                icon: Icons.school,
+                color: Color(0xFF6C5CE7),
+                nextPage: const CyberLearningPathPage(),
+              ),
+              const SizedBox(height: 16),
+              _buildChoiceCard(
+                context: context,
+                title: 'التطبيق العملي',
+                subtitle: 'أدوات تفاعلية: فحص كلمات المرور، كشف روابط، بطاقات تعليمية',
                 icon: Icons.play_circle,
                 color: Colors.green,
                 nextPage: const PracticePage(),
@@ -344,11 +389,11 @@ class PathChoicePage extends StatelessWidget {
               const SizedBox(height: 16),
               _buildChoiceCard(
                 context: context,
-                title: 'البوت الذكي 🤖',
-                subtitle: 'اسأل واحصل على إجابة فورية',
-                icon: Icons.chat,
-                color: Colors.purple,
-                nextPage: const ChatBotScreen(),
+                title: 'محاكي الهجمات',
+                subtitle: 'تعلم كيف يهاجم المخترقون — وكيف تحمي نفسك (محاكاة آمنة)',
+                icon: Icons.bug_report,
+                color: Colors.red,
+                nextPage: const AttackSimulatorLab(),
               ),
             ],
           ),
@@ -365,153 +410,25 @@ class PathChoicePage extends StatelessWidget {
     required Color color,
     required Widget nextPage,
   }) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (_) => nextPage));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => nextPage));
       },
+      borderRadius: BorderRadius.circular(22),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(20),
         margin: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white10,
+          color: Colors.white.withOpacity(0.05),
           borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: color.withOpacity(0.4)),
+          border: Border.all(color: color.withOpacity(0.3)),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.3),
-              blurRadius: 14,
-              offset: const Offset(0, 8),
-            )
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: color, size: 36),
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                    ),
-                    textAlign: TextAlign.right,
-                  ),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(fontSize: 15, color: Colors.white60),
-                    textAlign: TextAlign.right,
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.arrow_forward_ios, color: color, size: 22),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ================= قائمة التوعية =================
-class AwarenessMenuPage extends StatelessWidget {
-  const AwarenessMenuPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('دليل الحماية الرقمية')),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E3A5F), Color(0xFF0F1B33)],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              _buildItem(
-                title: ' حماية الطفل الإلكتروني 🧒',
-                icon: Icons.child_care,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const ChildProtectionPage()),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildItem(
-                title: ' البطاقة والدفع الآمن 💳',
-                icon: Icons.payment,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const PaymentSecurityPage()),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildItem(
-                title: ' حماية الحسابات والبريد الإلكتروني 🔐',
-                icon: Icons.verified_user,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AccountSecurityPage()),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
-              _buildItem(
-                title: ' تحذيرات رقمية مهمة ⚠️',
-                icon: Icons.warning,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SafetyWarningsPage()),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildItem({required String title, required IconData icon, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 22),
-        margin: const EdgeInsets.symmetric(vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white10,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFF4ECDC4).withOpacity(0.4)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF4ECDC4).withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
+              color: color.withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
             )
           ],
         ),
@@ -521,39 +438,391 @@ class AwarenessMenuPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: const Color(0xFF4ECDC4).withOpacity(0.2),
+                color: color.withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: const Color(0xFF4ECDC4), size: 28),
+              child: Icon(icon, color: color, size: 32),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 20),
             Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECDC4),
-                ),
-                textAlign: TextAlign.right,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withOpacity(0.85),
+                    ),
+                    textAlign: TextAlign.right,
+                  ),
+                ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: const Color(0xFF4ECDC4), size: 18),
+            Icon(Icons.arrow_forward_ios,
+                color: color.withOpacity(0.7), size: 18),
           ],
         ),
       ),
     );
   }
 }
+// ================= نموذج التقدم (بدون تغيير) =================
+class UserProgress {
+  static final UserProgress _instance = UserProgress._internal();
+  factory UserProgress() => _instance;
+  UserProgress._internal();
+  int _xp = 0;
+  int _level = 1;
+  int _streakDays = 0;
+  int _hearts = 5;
+  final List<String> _completedLessons = [];
+  DateTime _lastStudyDate = DateTime.now().subtract(const Duration(days: 2));
+  
+  int get xp => _xp;
+  int get level => _level;
+  int get streakDays => _streakDays;
+  int get hearts => _hearts;
+  List<String> get completedLessons => List.unmodifiable(_completedLessons);
+  
+  int xpForNextLevel() {
+    return _level * 100;
+  }
+  
+  double progressToNextLevel() {
+    return _xp / xpForNextLevel();
+  }
+  
+  bool isLessonCompleted(String lessonId) {
+    return _completedLessons.contains(lessonId);
+  }
+  
+  // ✅ إصلاح: فتح الدرس عند إكمال الدرس السابق
+  bool isLessonUnlocked(Lesson lesson) {
+    if (lesson.levelRequired == 1) return true;
+    
+    final currentIndex = learningPath.indexWhere((l) => l.id == lesson.id);
+    if (currentIndex > 0) {
+      final previousLesson = learningPath[currentIndex - 1];
+      return isLessonCompleted(previousLesson.id);
+    }
+    return _level >= lesson.levelRequired;
+  }
+  
+  void completeLesson(String lessonId, int xpReward) {
+    if (!_completedLessons.contains(lessonId)) {
+      _completedLessons.add(lessonId);
+      
+      // تحديث الـ XP والمستوى
+      _xp += xpReward;
+      while (_xp >= xpForNextLevel()) {
+        _xp -= xpForNextLevel();
+        _level++;
+      }
+      
+      // تحديث السلسلة (Streak)
+      final today = DateTime.now();
+      final diff = today.difference(_lastStudyDate).inDays;
+      if (diff == 0) {
+        // نفس اليوم - لا تغيير
+      } else if (diff == 1) {
+        _streakDays++;
+      } else if (diff > 1) {
+        _streakDays = 1;
+      }
+      _lastStudyDate = today;
+      
+      // استعادة القلوب تدريجياً
+      if (_hearts < 5) {
+        _hearts = (_hearts + 1).clamp(0, 5);
+      }
+    }
+  }
+  
+  void loseHeart() {
+    if (_hearts > 0) {
+      _hearts--;
+    }
+  }
+  
+  void restoreHearts() {
+    _hearts = 5;
+  }
+}
 
-// ================= 1. حماية الطفل الإلكتروني =================
-class ChildProtectionPage extends StatelessWidget {
-  const ChildProtectionPage({super.key});
+// ================= نموذج الدرس (بدون تغيير) =================
+class Lesson {
+  final String id;
+  final String title;
+  final String description;
+  final int xpReward;
+  final int levelRequired;
+  final List<LessonStep> steps;
+  final String icon;
+  final Color color;
+  final bool isLocked;
+  final bool isCompleted;
+  
+  Lesson({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.xpReward,
+    required this.levelRequired,
+    required this.steps,
+    required this.icon,
+    required this.color,
+    this.isLocked = false,
+    this.isCompleted = false,
+  });
+}
 
+class LessonStep {
+  final String type; // 'quiz', 'interactive', 'video', 'reading'
+  final String title;
+  final String content;
+  final List<QuizOption>? options;
+  final int correctAnswerIndex;
+  final int level; // مستوى داخلي داخل الدرس
+  
+  LessonStep({
+    required this.type,
+    required this.title,
+    required this.content,
+    this.options,
+    this.correctAnswerIndex = -1,
+    this.level = 1,
+  });
+}
+
+class QuizOption {
+  final String text;
+  final bool isCorrect;
+  
+  QuizOption(this.text, this.isCorrect);
+}
+
+// ================= مسار التعلم التفاعلي (بدون تغيير) =================
+final List<Lesson> learningPath = [
+  Lesson(
+    id: 'l1',
+    title: 'أساسيات الحماية',
+    description: 'تعرف على المفاهيم الأساسية للأمن السيبراني',
+    xpReward: 50,
+    levelRequired: 1,
+    icon: '🛡️',
+    color: const Color(0xFF4ECDC4),
+    steps: [
+      LessonStep(
+        level: 1,
+        type: 'reading',
+        title: 'ما هو الأمن السيبراني؟',
+        content: 'الأمن السيبراني هو حماية الأنظمة والشبكات والبرامج من الهجمات الرقمية التي تستهدف سرقة البيانات أو إتلافها أو تعطيلها.',
+      ),
+      LessonStep(
+        level: 2,
+        type: 'quiz',
+        title: 'لماذا نحتاج للأمن السيبراني؟ (مستوى 2)',
+        content: 'اختر الإجابة الصحيحة:',
+        options: [
+          QuizOption('لحماية بياناتنا الشخصية', true),
+          QuizOption('لتزيين حساباتنا', false),
+          QuizOption('لزيادة سرعة الإنترنت', false),
+        ],
+        correctAnswerIndex: 0,
+      ),
+      LessonStep(
+        level: 3,
+        type: 'quiz',
+        title: 'مفهوم الهجوم والدفاع (مستوى 3)',
+        content: 'اختر أفضل وصف للدفاع السيبراني:',
+        options: [
+          QuizOption('حظر كل الاتصالات نهائياً', false),
+          QuizOption('موازنة بين الوصول والأمان', true),
+          QuizOption('تعطيل الإنترنت لمنع الهجمات', false),
+        ],
+        correctAnswerIndex: 1,
+      ),
+    ],
+    isCompleted: false,
+  ),
+  Lesson(
+    id: 'l2',
+    title: 'كلمات المرور القوية',
+    description: 'تعلّم كيفية إنشاء كلمات مرور لا يمكن اختراقها',
+    xpReward: 75,
+    levelRequired: 2,
+    icon: '🔑',
+    color: const Color(0xFF6C5CE7),
+    steps: [
+      LessonStep(
+        level: 1,
+        type: 'reading',
+        title: 'أنشئ كلمة مرور قوية',
+        content: 'استخدم الأداة التفاعلية لفحص قوة كلمة المرور',
+      ),
+      LessonStep(
+        level: 2,
+        type: 'quiz',
+        title: 'ما هي أفضل كلمة مرور؟',
+        content: 'اختر الخيار الأقوى:',
+        options: [
+          QuizOption('123456', false),
+          QuizOption('password', false),
+          QuizOption('قهوة-قمر-كتاب-2026!', true),
+        ],
+        correctAnswerIndex: 2,
+      ),
+      LessonStep(
+        level: 3,
+        type: 'reading',
+        title: 'حسّن كلمة المرور',
+        content: 'قم بتحويل كلمة مرور بسيطة إلى واحدة قوية باستخدام القواعد المقترحة',
+      ),
+    ],
+    isLocked: true,
+  ),
+  Lesson(
+    id: 'l3',
+    title: 'التصيد الإلكتروني',
+    description: 'تعلّم كيفية اكتشاف الرسائل والروابط الاحتيالية',
+    xpReward: 100,
+    levelRequired: 3,
+    icon: '🎣',
+    color: Colors.red,
+    steps: [
+      LessonStep(
+        level: 1,
+        type: 'reading',
+        title: 'حلل الرابط (مستوى 1)',
+        content: 'استخدم أداة كشف الروابط الضارة لفحص روابط حقيقية',
+      ),
+      LessonStep(
+        level: 2,
+        type: 'quiz',
+        title: 'كيف تتجنب التصيد؟ (مستوى 2)',
+        content: 'اختر أفضل ممارسة:',
+        options: [
+          QuizOption('النقر على كل روابط البريد', false),
+          QuizOption('التحقق من عنوان الموقع قبل الإدخال', true),
+          QuizOption('مشاركة كلمة المرور مع الأصدقاء', false),
+        ],
+        correctAnswerIndex: 1,
+      ),
+      LessonStep(
+        level: 3,
+        type: 'reading',
+        title: 'التعرف على رسائل تصيّد',
+        content: 'تحليل رسالة بريد والإشارة للعناصر المشبوهة (تحدي مستوى 3)',
+      ),
+    ],
+    isLocked: true,
+  ),
+  Lesson(
+    id: 'l4',
+    title: 'حماية الأطفال',
+    description: 'أدوات ونصائح لحماية أطفالك في العالم الرقمي',
+    xpReward: 120,
+    levelRequired: 4,
+    icon: '👶',
+    color: Colors.orange,
+    steps: [
+      LessonStep(
+        level: 1,
+        type: 'reading',
+        title: 'مخاطر الإنترنت على الأطفال',
+        content: 'التعرض لمحتوى غير مناسب، التنمر الإلكتروني، والتواصل مع الغرباء هم أبرز المخاطر التي تواجه الأطفال على الإنترنت.',
+      ),
+      LessonStep(
+        level: 2,
+        type: 'quiz',
+        title: 'ما هي أفضل أداة للرقابة الأبوية؟',
+        content: 'اختر الإجابة الصحيحة:',
+        options: [
+          QuizOption('Google Family Link', true),
+          QuizOption('تطبيق الألعاب', false),
+          QuizOption('متصفح الإنترنت العادي', false),
+        ],
+        correctAnswerIndex: 0,
+      ),
+      LessonStep(
+        level: 3,
+        type: 'reading',
+        title: 'إعداد أدوات الرقابة',
+        content: 'تطبيق عملي لإعداد الرقابة الأبوية على جهاز حقيقي أو افتراضي',
+      ),
+    ],
+    isLocked: true,
+  ),
+];
+
+// ================= مسار التعلم التفاعلي (واجهة الدروس) - تم التعديل =================
+class CyberLearningPathPage extends StatefulWidget {
+  const CyberLearningPathPage({super.key});
+  
+  @override
+  State<CyberLearningPathPage> createState() => _CyberLearningPathPageState();
+}
+
+class _CyberLearningPathPageState extends State<CyberLearningPathPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+  final UserProgress progress = UserProgress();
+  
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutBack,
+    );
+    _controller.forward();
+  }
+  
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('حماية الطفل الإلكتروني')),
+      appBar: AppBar(
+        title: const Text(
+          'مسار التعلم التفاعلي',
+          textDirection: TextDirection.rtl,
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.leaderboard, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProgressDashboard(progress: progress),
+                ),
+              );
+            },
+            tooltip: 'لوحة التقدم',
+          ),
+        ],
+      ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -563,784 +832,986 @@ class ChildProtectionPage extends StatelessWidget {
           ),
         ),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Text(
-                'حماية الطفل في العالم الرقمي مسؤولية واعية. إليك أبرز المخاطر والحلول:',
-                style: TextStyle(fontSize: 16, color: Colors.white70, height: 1.7),
-                textAlign: TextAlign.right,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0), // ✅ تقليل padding
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch, // ✅ كامل العرض
+              children: [
+                // معلومات المستخدم والـ XP
+                ScaleTransition(
+                  scale: _animation,
+                  child: Container(
+                    padding: const EdgeInsets.all(12), // ✅ تقليل الحجم
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1A365D).withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: const Color(0xFF4ECDC4),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start, // ✅ النص من اليمين
+                              children: [
+                                Text(
+                                  'المستوى ${progress.level}',
+                                  style: const TextStyle(
+                                    fontSize: 18, // ✅ تقليل الحجم
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF4ECDC4),
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${progress.xp} / ${progress.xpForNextLevel()} XP',
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 12,
+                                  ),
+                                  textDirection: TextDirection.rtl,
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(8), // ✅ تقليل الحجم
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF4ECDC4).withOpacity(0.2),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.security,
+                                color: Color(0xFF4ECDC4),
+                                size: 24, // ✅ تقليل الحجم
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        XPProgressBar(progress: progress.progressToNextLevel()),
+                        const SizedBox(height: 8),
+                        StreakTracker(streakDays: progress.streakDays),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // العنوان
+                Text(
+                  'الدروس المتاحة',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textDirection: TextDirection.rtl,
+                  textAlign: TextAlign.center, // ✅ النص في الوسط
+                ),
+                const SizedBox(height: 8),
+                // قائمة الدروس
+                ...learningPath.map((lesson) {
+                  final isUnlocked = progress.isLessonUnlocked(lesson);
+                  final isCompleted = progress.isLessonCompleted(lesson.id);
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4), // ✅ تقليل المسافة
+                    child: _buildLessonCard(
+                      lesson,
+                      isUnlocked,
+                      isCompleted,
+                      () {
+                        if (isUnlocked) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LessonScreen(
+                                lesson: lesson,
+                                onComplete: () {
+                                  progress.completeLesson(lesson.id, lesson.xpReward);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(Icons.star, color: Colors.yellow),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'حصلت على ${lesson.xpReward} XP! 🎉',
+                                            style: const TextStyle(color: Colors.white),
+                                            textDirection: TextDirection.rtl,
+                                          ),
+                                        ],
+                                      ),
+                                      backgroundColor: const Color(0xFF1A365D),
+                                    ),
+                                  );
+                                  setState(() {});
+                                },
+                              ),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'أكمل الدرس السابق لفتح هذا الدرس!',
+                                textDirection: TextDirection.rtl,
+                                textAlign: TextAlign.center,
+                              ),
+                              backgroundColor: Color(0xFF1A365D),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  );
+                }).toList(),
+                const SizedBox(height: 24),
+                // رسالة تحفيزية
+                Container(
+                  padding: const EdgeInsets.all(12), // ✅ تقليل الحجم
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1A365D).withOpacity(0.8),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: const Color(0xFF4ECDC4).withOpacity(0.7),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        '💡 تلميح:',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF4ECDC4),
+                        ),
+                        textDirection: TextDirection.rtl,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'استمر يومياً للحفاظ على سلسلة التعلم (Streak) واحصل على مكافآت إضافية! كل 7 أيام تحصل على 50 XP إضافية.',
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.white70,
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.center,
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
+  // ✅ تم تعديل المربعات لتكون أصغر والنص في الوسط
+  Widget _buildLessonCard(
+    Lesson lesson,
+    bool isUnlocked,
+    bool isCompleted,
+    VoidCallback onTap,
+  ) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+      decoration: BoxDecoration(
+        color: isCompleted
+            ? Colors.green.withOpacity(0.15)
+            : isUnlocked
+                ? Colors.white.withOpacity(0.08)
+                : Colors.grey.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(12), // ✅ تقليل نصف القطر
+        border: Border.all(
+          color: isCompleted
+              ? Colors.green
+              : isUnlocked
+                  ? lesson.color.withOpacity(0.6)
+                  : Colors.grey,
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: lesson.color.withOpacity(0.2),
+            blurRadius: 6, // ✅ تقليل الظل
+            offset: const Offset(0, 3), // ✅ تقليل الظل
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: isUnlocked ? onTap : null,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.all(10), // ✅ تقليل padding
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(6), // ✅ تقليل الحجم
+                  decoration: BoxDecoration(
+                    color: lesson.color.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Text(
+                    lesson.icon,
+                    style: const TextStyle(fontSize: 20), // ✅ تقليل الحجم
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center, // ✅ النص في الوسط
+                    children: [
+                      Text(
+                        lesson.title,
+                        style: TextStyle(
+                          fontSize: 15, // ✅ تقليل الحجم
+                          fontWeight: FontWeight.bold,
+                          color: isCompleted ? Colors.green : lesson.color,
+                        ),
+                        textAlign: TextAlign.center, // ✅ النص في الوسط
+                        textDirection: TextDirection.rtl,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        lesson.description,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 11, // ✅ تقليل الحجم
+                        ),
+                        textAlign: TextAlign.center, // ✅ النص في الوسط
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                if (isCompleted)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3), // ✅ تقليل الحجم
+                    decoration: BoxDecoration(
+                      color: Colors.green.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.check_circle, size: 12, color: Colors.green),
+                        SizedBox(width: 4),
+                        Text(
+                          'مكتمل',
+                          style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3), // ✅ تقليل الحجم
+                    decoration: BoxDecoration(
+                      color: lesson.color.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '+${lesson.xpReward} XP',
+                      style: TextStyle(
+                        color: lesson.color,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11,
+                      ),
+                      textDirection: TextDirection.rtl,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ================= شاشة الدرس التفاعلي - تم التعديل =================
+class LessonScreen extends StatefulWidget {
+  final Lesson lesson;
+  final VoidCallback onComplete;
+  
+  const LessonScreen({
+    super.key,
+    required this.lesson,
+    required this.onComplete,
+  });
+  
+  @override
+  State<LessonScreen> createState() => _LessonScreenState();
+}
+
+class _LessonScreenState extends State<LessonScreen> {
+  int _currentStepIndex = 0;
+  int _selectedOption = -1;
+  bool _isAnswerCorrect = false;
+  bool _isStepCompleted = false;
+  
+  @override
+  Widget build(BuildContext context) {
+    final step = widget.lesson.steps[_currentStepIndex];
+    return Scaffold(
+      backgroundColor: const Color(0xFF0F1B33),
+      appBar: AppBar(
+        title: Text(
+          'الدرس: ${widget.lesson.title} - مستوى ${step.level}',
+          textDirection: TextDirection.rtl,
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Row(
+              children: [
+                const Icon(Icons.star, color: Color(0xFF4ECDC4), size: 18),
+                const SizedBox(width: 4),
+                Text(
+                  '${widget.lesson.xpReward} XP',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  textDirection: TextDirection.rtl,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // شريط التقدم
+          Container(
+            height: 6,
+            color: Colors.white10,
+            child: FractionallySizedBox(
+              widthFactor: (_currentStepIndex + 1) / widget.lesson.steps.length,
+              child: Container(
+                color: widget.lesson.color,
               ),
-              const SizedBox(height: 30),
-              _buildSection(
-                'مشاهدة محتوى غير مناسب 🎬',
-                'مثل: فيديوهات عنف، حوادث، أو ألعاب تحتوي على مشاهد مخيفة.\n• الحل: استخدم تطبيقات مخصصة للأطفال مثل YouTube Kids، وفعّل الفلترة.',
-              ),
-              _buildSection(
-                'التحدث مع غرباء (Grooming) 👤',
-                'شخص بالغ يتظاهر بأنه طفل لاستدراج طفلك، ثم يطلب صورًا أو فيديوهات.\n• الحل: علّم طفلك: "لا تتحدث مع من لا تعرفه"، وعطّل خاصية الدردشة في الألعاب إن أمكن.',
-              ),
-              _buildSection(
-                'التنمر الإلكتروني (Cyberbullying)',
-                'يُسخر منه أحد في مجموعة واتساب أو إنستغرام، أو ينشر صورته بطريقة محرجة.\n• الحل: شجعه على الإبلاغ فورًا، ولا توبخه إذا تعرض لذلك.',
-              ),
-              _buildSection(
-                'الإفراط في استخدام الشاشة ⏳',
-                'يلعب لساعات دون توقف، ويُهمل الدراسة أو النوم.\n• الحل: حدد وقتًا يوميًا للجهاز (مثلاً: ساعة بعد الدراسة)، واستخدم أدوات التوقيت.',
-              ),
-              _buildSection(
-                'الضغط على روابط خطرة 🔗',
-                'يضغط على إعلان يقول "اربح لعبة مجانية!"، فيُصاب الجهاز بفيروس.\n• الحل: لا تسمح له بتنزيل تطبيقات من خارج المتجر الرسمي (مثل Google Play أو App Store).',
-              ),
-              const SizedBox(height: 30),
-              _buildSubtitle('أدوات الحماية المتاحة 🛠️'),
-              _buildTable(
-                headers: ['الأداة', 'ما تفعله'],
-                rows: [
-                  ['Google Family Link', 'تحكم في الوقت والتطبيقات، ورؤية مكانه'],
-                  ['Apple Screen Time', 'حدد وقت كل تطبيق، ومنع المواقع غير اللائقة'],
-                  ['Kaspersky Safe Kids', 'راقب المحتوى والدردشات، واحصل على تحذيرات'],
-                  ['Bark', 'يُحذّر من التنمر أو الابتزاز عبر 30+ تطبيق'],
+            ),
+          ),
+          const SizedBox(height: 16),
+          // محتوى الدرس
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: _buildStepContent(step),
+            ),
+          ),
+          // أزرار التحكم
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: _buildActionButtons(),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildStepContent(LessonStep step) {
+    if (step.type == 'reading') {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            step.title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF4ECDC4),
+            ),
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            step.content,
+            style: const TextStyle(
+              fontSize: 15,
+              height: 1.6,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+          ),
+        ],
+      );
+    } else if (step.type == 'quiz') {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            step.title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF4ECDC4),
+            ),
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            step.content,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.white70,
+              height: 1.5,
+            ),
+            textAlign: TextAlign.center,
+            textDirection: TextDirection.rtl,
+          ),
+          const SizedBox(height: 24),
+          ...List.generate(
+            step.options?.length ?? 0,
+            (index) => _buildQuizOption(step.options![index], index),
+          ),
+        ],
+      );
+    } else {
+      return const Center(
+        child: Text(
+          'محتوى قادم قريبًا...',
+          style: TextStyle(color: Colors.white, fontSize: 18),
+          textDirection: TextDirection.rtl,
+        ),
+      );
+    }
+  }
+  
+  Widget _buildQuizOption(QuizOption option, int index) {
+    final isSelected = _selectedOption == index;
+    final isCorrect = option.isCorrect;
+    Color? bgColor;
+    if (_isStepCompleted) {
+      bgColor = isCorrect ? Colors.green : (isSelected ? Colors.red : null);
+    } else {
+      bgColor = isSelected ? widget.lesson.color.withOpacity(0.3) : null;
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+          color: bgColor ?? Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? widget.lesson.color : Colors.white.withOpacity(0.2),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: !_isStepCompleted
+                ? () {
+                    setState(() {
+                      _selectedOption = index;
+                      _isAnswerCorrect = option.isCorrect;
+                      _isStepCompleted = true;
+                    });
+                  }
+                : null,
+            borderRadius: BorderRadius.circular(12),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  if (_isStepCompleted)
+                    Icon(
+                      isCorrect ? Icons.check_circle : (isSelected ? Icons.cancel : Icons.circle),
+                      color: isCorrect ? Colors.green : Colors.red,
+                      size: 18,
+                    )
+                  else
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: widget.lesson.color.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${index + 1}',
+                          style: TextStyle(
+                            color: widget.lesson.color,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textDirection: TextDirection.rtl,
+                        ),
+                      ),
+                    ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      option.text,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Colors.white,
+                        height: 1.4,
+                      ),
+                      textAlign: TextAlign.center,
+                      textDirection: TextDirection.rtl,
+                    ),
+                  ),
                 ],
               ),
-              const SizedBox(height: 30),
-              _buildSubtitle('نصائح عملية للوالدين 💡'),
-              _buildTips([
-                'لا تترك الطفل يستخدم الجهاز في غرفة نومه ليلًا',
-                'لا تسمح له بتنزيل تطبيقات من مصادر غير موثوقة',
-                'استخدم بريدًا إلكترونيًا منفصلًا له',
-                'فعّل المصادقة الثنائية على حسابه',
-                'علّمه ألا يشارك صوره أو بياناته مع أحد',
-              ]),
-              const SizedBox(height: 40),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  
+  Widget _buildActionButtons() {
+    return Column(
+      children: [
+        if (_isStepCompleted && widget.lesson.steps.length > 1)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              '✓ أكملت المستوى ${_currentStepIndex + 1} من ${widget.lesson.steps.length}',
+              style: const TextStyle(
+                color: Colors.green,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+              textAlign: TextAlign.center,
+              textDirection: TextDirection.rtl,
+            ),
+          ),
+        Row(
+          children: [
+            if (_currentStepIndex > 0)
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    setState(() {
+                      _currentStepIndex--;
+                      _selectedOption = -1;
+                      _isAnswerCorrect = false;
+                      _isStepCompleted = false;
+                    });
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.white30),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text(
+                    'السابق',
+                    style: TextStyle(color: Colors.white, fontSize: 13),
+                    textDirection: TextDirection.rtl,
+                  ),
+                ),
+              )
+            else
+              const Expanded(child: SizedBox()),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _canProceed()
+                    ? () {
+                        if (_currentStepIndex == widget.lesson.steps.length - 1) {
+                          widget.onComplete();
+                          Navigator.pop(context);
+                        } else {
+                          setState(() {
+                            _currentStepIndex++;
+                            _selectedOption = -1;
+                            _isAnswerCorrect = false;
+                            _isStepCompleted = false;
+                          });
+                        }
+                      }
+                    : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: _canProceed() ? widget.lesson.color : Colors.grey,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+                child: Text(
+                  _currentStepIndex == widget.lesson.steps.length - 1
+                      ? 'إنهاء الدرس'
+                      : 'التالي',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+  
+  bool _canProceed() {
+    final step = widget.lesson.steps[_currentStepIndex];
+    if (step.type == 'reading') return true;
+    if (step.type == 'quiz') return _isStepCompleted;
+    return true;
+  }
+}
+
+// ================= لوحة التقدم - تم التعديل =================
+class ProgressDashboard extends StatelessWidget {
+  final UserProgress progress;
+  const ProgressDashboard({super.key, required this.progress});
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('لوحة التقدم', textDirection: TextDirection.rtl),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF1E3A5F), Color(0xFF0F1B33)],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // ملخص التقدم
               Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E3A5F).withOpacity(0.9),
+                  color: const Color(0xFF1A365D).withOpacity(0.8),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFF4ECDC4), width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF4ECDC4).withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    )
-                  ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: const [
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
                     Text(
-                      '🌟 رسالة من CyberSecurity إليك:',
-                      style: TextStyle(
-                        fontSize: 20,
+                      'مستوى ${progress.level}',
+                      style: const TextStyle(
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF4ECDC4),
                       ),
-                      textAlign: TextAlign.right,
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 12),
+                    const SizedBox(height: 6),
                     Text(
-                      'الأمان لا يعني الحبس، بل التوعية والثقة.\nكل خطوة تأخذها لحماية طفلك، تبني له مستقبلاً آمناً.\nأنت درعه الرقمي.',
-                      style: TextStyle(fontSize: 16, color: Colors.white70, height: 1.8),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSection(String title, String content) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF4ECDC4),
-            ),
-            textAlign: TextAlign.right,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            content,
-            style: const TextStyle(fontSize: 15, color: Colors.white70, height: 1.6),
-            textAlign: TextAlign.right,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSubtitle(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF4ECDC4),
-        ),
-        textAlign: TextAlign.right,
-      ),
-    );
-  }
-
-  Widget _buildTable({required List<String> headers, required List<List<String>> rows}) {
-    return Table(
-      textDirection: TextDirection.rtl,
-      border: TableBorder.all(color: const Color(0xFF4ECDC4).withOpacity(0.4), width: 1.5),
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      children: [
-        TableRow(
-          decoration: const BoxDecoration(color: Color(0xFF1E3A5F)),
-          children: headers.map((h) => Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(h, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-          )).toList(),
-        ),
-        ...rows.map((row) => TableRow(
-          decoration: BoxDecoration(color: Colors.white10),
-          children: row.map((cell) => Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(cell, style: const TextStyle(fontSize: 14, color: Colors.white70), textAlign: TextAlign.center),
-          )).toList(),
-        )),
-      ],
-    );
-  }
-
-  Widget _buildTips(List<String> tips) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: tips.map((tip) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          textDirection: TextDirection.rtl,
-          children: [
-            const Icon(Icons.circle, color: Color(0xFF4ECDC4), size: 8),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                tip,
-                style: const TextStyle(fontSize: 15, color: Colors.white70),
-                textAlign: TextAlign.right,
-              ),
-            ),
-          ],
-        ),
-      )).toList(),
-    );
-  }
-}
-
-// ================= 2. البطاقة والدفع الآمن =================
-class PaymentSecurityPage extends StatelessWidget {
-  const PaymentSecurityPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('البطاقة والدفع الآمن')),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E3A5F), Color(0xFF0F1B33)],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Text(
-                'البطاقة البنكية هدف رئيسي للمحتالين. إليك كيف تحافظ على أموالك:',
-                style: TextStyle(fontSize: 16, color: Colors.white70, height: 1.7),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 30),
-              _buildSection(
-                'عدم ربط بطاقة ائتمان مباشرة بالتطبيقات 💳',
-                'مثل: جوجل بلاي، آيتونز، أو أمازون.\n• الحل: استخدم بطاقة مدفوعة مسبقًا (Prepaid Card) برصيد محدود.',
-              ),
-              _buildSection(
-                'تفعيل "طلب الموافقة" على الشراء 🔒',
-                'يمنع الشراء العرضي أو غير المقصود.\n• الحل: موجود في: Google Play > الإعدادات > طريقة الدفع > طلب الموافقة.',
-              ),
-              _buildSection(
-                'عدم استخدام "حفظ كلمة المرور" في المتصفح ❌',
-                'لأن أي شخص يصل إلى جهازك يمكنه الشراء.',
-              ),
-              _buildSection(
-                'التأكد من أن الموقع آمن 🔐',
-                'تحقق من أن الرابط يبدأ بـ https:// وليس http://.\n• الحل: ابحث عن رمز القفل 🔒 بجانب الرابط.',
-              ),
-              const SizedBox(height: 30),
-              _buildSubtitle('كيف تتجنب حالات النصب؟ 🚫'),
-              _buildTable(
-                headers: ['الحالة', 'الحل'],
-                rows: [
-                  ['"اربح جائزة!"', 'لا تصدق العروض "الجيدة جدًا ليكونوا حقيقيين"'],
-                  ['"حسابك مغلق، انقر هنا"', 'لا تنقر على روابط من جهات مجهولة'],
-                  ['"شخص من دعم فني" يطلب صلاحيات', 'لا تعطِ أحدًا صلاحيات جهازك أبدًا'],
-                  ['"ارسل 100 ريال لإلغاء الاشتراك"', 'لا تدفع أبدًا – هذا احتيال'],
-                ],
-              ),
-              const SizedBox(height: 30),
-              _buildSubtitle('نصائح حماية إضافية 💡'),
-              _buildTips([
-                'لا تشارك صورة بطاقة الدفع أبدًا',
-                'لا تستخدم الواي فاي العام للشراء',
-                'غيّر كلمة مرور الحساب البنكي بانتظام',
-                'فعّل إشعارات الشراء على هاتفك',
-              ]),
-              const SizedBox(height: 40),
-              Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E3A5F).withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.orange, width: 2),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: const [
-                    Text(
-                      '💡 تذكّر:',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange,
+                      'إجمالي الـ XP: ${((progress.level - 1) * progress.xpForNextLevel()) + progress.xp}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
                       ),
-                      textAlign: TextAlign.right,
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.center,
                     ),
-                    SizedBox(height: 12),
-                    Text(
-                      'الشراء الآمن = وعي + تحقق + احتياط.\nلا تدع الطمع أو الخوف يخدعك.\nأنت أذكى من أي رسالة احتيال.',
-                      style: TextStyle(fontSize: 16, color: Colors.white70, height: 1.8),
-                      textAlign: TextAlign.right,
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildStatItem(
+                          Icons.favorite,
+                          Colors.red,
+                          '${progress.hearts}/5',
+                          'قلوب',
+                        ),
+                        _buildStatItem(
+                          Icons.calendar_today,
+                          Colors.orange,
+                          '${progress.streakDays} يوم',
+                          'سلسلة',
+                        ),
+                        _buildStatItem(
+                          Icons.school,
+                          Colors.purple,
+                          '${progress.completedLessons.length}/${learningPath.length}',
+                          'دروس',
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSection(String title, String content) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF4ECDC4),
-            ),
-            textAlign: TextAlign.right,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            content,
-            style: const TextStyle(fontSize: 15, color: Colors.white70, height: 1.6),
-            textAlign: TextAlign.right,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSubtitle(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF4ECDC4),
-        ),
-        textAlign: TextAlign.right,
-      ),
-    );
-  }
-
-  Widget _buildTable({required List<String> headers, required List<List<String>> rows}) {
-    return Table(
-      textDirection: TextDirection.rtl,
-      border: TableBorder.all(color: const Color(0xFF4ECDC4).withOpacity(0.4), width: 1.5),
-      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-      children: [
-        TableRow(
-          decoration: const BoxDecoration(color: Color(0xFF1E3A5F)),
-          children: headers.map((h) => Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(h, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-          )).toList(),
-        ),
-        ...rows.map((row) => TableRow(
-          decoration: BoxDecoration(color: Colors.white10),
-          children: row.map((cell) => Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(cell, style: const TextStyle(fontSize: 14, color: Colors.white70), textAlign: TextAlign.center),
-          )).toList(),
-        )),
-      ],
-    );
-  }
-
-  Widget _buildTips(List<String> tips) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: tips.map((tip) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          textDirection: TextDirection.rtl,
-          children: [
-            const Icon(Icons.circle, color: Color(0xFF4ECDC4), size: 8),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                tip,
-                style: const TextStyle(fontSize: 15, color: Colors.white70),
-                textAlign: TextAlign.right,
-              ),
-            ),
-          ],
-        ),
-      )).toList(),
-    );
-  }
-}
-
-// ================= 3. حماية الحسابات =================
-class AccountSecurityPage extends StatelessWidget {
-  const AccountSecurityPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('حماية الحسابات')),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E3A5F), Color(0xFF0F1B33)],
-          ),
-        ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Text(
-                'الحسابات الشخصية (مثل الجيميل، فيسبوك، إنستغرام) هي بوابة خطرة إذا لم تُحمى جيدًا.',
-                style: TextStyle(fontSize: 16, color: Colors.white70, height: 1.7),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 30),
-              _buildSection(
-                'عدم استخدام اسمك أو تاريخ ميلادك في البريد 📧',
-                'مثل: ahmed1990@gmail.com.\n• الحل: استخدم بريدًا منفصلًا للتسجيل في المواقع.',
-              ),
-              _buildSection(
-                'عدم فتح مرفقات من جهات مجهولة 📎',
-                'قد تحتوي على فيروسات أو برمجيات خبيثة.',
-              ),
-              _buildSection(
-                'عدم قبول طلبات صداقة من أشخاص لا تعرفهم 👥',
-                'قد يكونون حسابات وهمية لجمع بياناتك.',
-              ),
-              _buildSection(
-                'عدم نشر صور عائلتك أو منزلك 🏠',
-                'لأنها قد تُستخدم ضدك أو للتنمر.',
-              ),
-              const SizedBox(height: 30),
-              _buildSubtitle('كيف تفعل المصادقة الثنائية (2FA)؟ 🔐'),
-              _buildTips([
-                'افتح إعدادات الحساب (مثل: جيميل أو فيسبوك)',
-                'اذهب إلى "الأمان" أو "كلمة المرور"',
-                'اختر "المصادقة الثنائية" أو "التحقق بخطوتين"',
-                'اختر: رسالة نصية، إشعار على الهاتف، أو تطبيق مثل Google Authenticator',
-                'اتبع التعليمات وفعّلها',
-              ]),
               const SizedBox(height: 16),
-              const Text(
-                '✅ مع المصادقة الثنائية، حتى لو عرف أحد كلمة المرور، لا يستطيع الدخول بدون هاتفك.',
-                style: TextStyle(fontSize: 15, color: Colors.green, height: 1.6),
-                textAlign: TextAlign.right,
+              // الإحصائيات
+              Text(
+                'إحصائيات التعلم',
+                style: Theme.of(context).textTheme.titleMedium,
+                textDirection: TextDirection.rtl,
+                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 30),
-              _buildSubtitle('نصائح مهمة 💡'),
-              _buildTips([
-                'غيّر كلمات المرور كل 3-6 أشهر',
-                'لا تستخدم كلمات بسيطة مثل "123456" أو "password"',
-                'استخدم مدير كلمات مرور مثل Bitwarden (مجاني وآمن)',
-                'لا تكتب كلمات المرور على ورقة داخل الجوال',
-              ]),
-              const SizedBox(height: 40),
-              Container(
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E3A5F).withOpacity(0.9),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.green, width: 2),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: const [
-                    Text(
-                      '✅ نصيحة ذهبية:',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                      textAlign: TextAlign.right,
-                    ),
-                    SizedBox(height: 12),
-                    Text(
-                      'الحساب الآمن = كلمة مرور قوية + مصادقة ثنائية + وعي.\nابدأ اليوم، ولا تؤجل حماية نفسك.\nأنت تستحق الأمان.',
-                      style: TextStyle(fontSize: 16, color: Colors.white70, height: 1.8),
-                      textAlign: TextAlign.right,
-                    ),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 12),
+              _buildStatCard('أعلى سلسلة', '12 يوم', Icons.emoji_events, Colors.yellow),
+              const SizedBox(height: 8),
+              _buildStatCard('أفضل درس', 'كلمات المرور', Icons.verified, Colors.green),
+              const SizedBox(height: 8),
+              _buildStatCard('الوقت المستغرق', '47 دقيقة', Icons.timer, Colors.blue),
             ],
           ),
         ),
       ),
     );
   }
-
-  Widget _buildSection(String title, String content) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF4ECDC4),
-            ),
-            textAlign: TextAlign.right,
+  
+  Widget _buildStatItem(IconData icon, Color color, String value, String label) {
+    return Column(
+      children: [
+        Icon(icon, color: color, size: 22),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: color,
           ),
-          const SizedBox(height: 8),
-          Text(
-            content,
-            style: const TextStyle(fontSize: 15, color: Colors.white70, height: 1.6),
-            textAlign: TextAlign.right,
+          textDirection: TextDirection.rtl,
+        ),
+        Text(
+          label,
+          style: const TextStyle(color: Colors.white70, fontSize: 12),
+          textDirection: TextDirection.rtl,
+        ),
+      ],
+    );
+  }
+  
+  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
+                textDirection: TextDirection.rtl,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                textDirection: TextDirection.rtl,
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 20),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildSubtitle(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF4ECDC4),
-        ),
-        textAlign: TextAlign.right,
-      ),
-    );
-  }
-
-  Widget _buildTips(List<String> tips) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: tips.map((tip) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          textDirection: TextDirection.rtl,
+// ================= شريط التقدم - تم التعديل =================
+class XPProgressBar extends StatelessWidget {
+  final double progress;
+  const XPProgressBar({super.key, required this.progress});
+  
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
           children: [
-            const Icon(Icons.circle, color: Color(0xFF4ECDC4), size: 8),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                tip,
-                style: const TextStyle(fontSize: 15, color: Colors.white70),
-                textAlign: TextAlign.right,
+            Container(
+              width: constraints.maxWidth,
+              height: 6, // ✅ تقليل الارتفاع
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.easeOut,
+              width: constraints.maxWidth * progress.clamp(0.0, 1.0),
+              height: 6,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF4ECDC4), Color(0xFF6C5CE7)],
+                ),
+                borderRadius: BorderRadius.circular(3),
               ),
             ),
           ],
-        ),
-      )).toList(),
+        );
+      },
     );
   }
 }
 
-// ================= 4. التحذيرات الرقمية =================
-class SafetyWarningsPage extends StatelessWidget {
-  const SafetyWarningsPage({super.key});
-
+// ================= متتبع السلسلة - تم التعديل =================
+class StreakTracker extends StatelessWidget {
+  final int streakDays;
+  const StreakTracker({super.key, required this.streakDays});
+  
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('تحذيرات رقمية مهمة')),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E3A5F), Color(0xFF0F1B33)],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '🔥 سلسلة التعلم: $streakDays يوم',
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.orange,
+              ),
+              textDirection: TextDirection.rtl,
+            ),
+            if (streakDays >= 7)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.yellow.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  '+50 XP',
+                  style: TextStyle(
+                    color: Colors.yellow,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 11,
+                  ),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        SizedBox(
+          height: 6,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: streakDays > 14 ? 14 : streakDays,
+            itemBuilder: (context, index) {
+              final day = streakDays - index;
+              return Padding(
+                padding: const EdgeInsets.only(left: 3),
+                child: Container(
+                  width: 22, // ✅ تقليل العرض
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: _getStreakColor(day),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+              );
+            },
           ),
         ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              const Text(
-                'هذه التحذيرات تحميك من الأخطاء الشائعة التي قد تؤدي إلى اختراق أو نصب.',
-                style: TextStyle(fontSize: 16, color: Colors.white70, height: 1.7),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 30),
-              _buildWarning(
-                'عدم فتح روابط من مصادر مجهولة 🔗',
-                'سواء في واتساب، إيميل، أو رسائل نصية.\nقد تكون روابط تصيد (Phishing) لسرقة بياناتك.',
-              ),
-              _buildWarning(
-                'عدم تخزين صور حساسة في المحادثات 📸',
-                'أي صورة ترسلها قد تُسرب أو تُستخدم ضدك.\nخاصة الصور الشخصية أو الحساسة.',
-              ),
-              _buildWarning(
-                'عدم استخدام نفس كلمة المرور لكل الحسابات 🔑',
-                'إذا تسربت من حساب واحد، تُفتح جميع حساباتك.\nاستخدم كلمات مرور مختلفة لكل حساب.',
-              ),
-              _buildWarning(
-                'عدم استخدام الواي فاي العام للدخول إلى الحسابات البنكية 📶',
-                'يمكن للقراصنة مراقبة ما تكتبه.\nاستخدم بيانات الهاتف (4G/5G) بدلًا من ذلك.',
-              ),
-              _buildWarning(
-                'عدم قبول طلبات صداقة من أشخاص لا تعرفهم 👥',
-                'قد يكونون حسابات وهمية لجمع بياناتك.\nتحقق من صورة الملف، المنشورات، والمشتركين المشتركين.',
-              ),
-              _buildWarning(
-                'عدم التحدث مع أشخاص غرباء في تطبيقات الدردشة العشوائية 🗣️',
-                'مثل: Omegle، Chatroulette.\nهذه المواقع خطيرة جدًا، خاصة للأطفال.',
-              ),
-              _buildWarning(
-                'عدم إظهار وجهك أو معلوماتك في البث المباشر 📺',
-                'لا تُظهر شاشة حسابك البنكي، بطاقة الهوية، أو عنوان منزلك.',
-              ),
-              _buildWarning(
-                'عدم الثقة في كل ما تراه على الإنترنت ❌',
-                'بعض الفيديوهات والأخبار مزيفة.\nتحقق من المصدر قبل مشاركة أي شيء.',
-              ),
-              const SizedBox(height: 30),
-              _buildSummary(),
-            ],
-          ),
-        ),
-      ),
+      ],
     );
   }
-
-  Widget _buildWarning(String title, String content) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFFD00000),
-            ),
-            textAlign: TextAlign.right,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            content,
-            style: const TextStyle(fontSize: 15, color: Colors.white70, height: 1.6),
-            textAlign: TextAlign.right,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummary() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E3A5F).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFD00000), width: 1.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          const Text(
-            '✅ خلاصة: 5 قواعد ذهبية للحماية',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFFD00000),
-            ),
-            textAlign: TextAlign.right,
-          ),
-          const SizedBox(height: 12),
-          _buildTip('فعل المصادقة الثنائية على كل الحسابات المهمة.'),
-          _buildTip('استخدم مدير كلمات مرور.'),
-          _buildTip('لا تفتح روابط غريبة.'),
-          _buildTip('لا تشارك صور بطاقة الهوية أو الحساب البنكي.'),
-          _buildTip('علّم أبناءك السلامة الرقمية بلطف وثقة.'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTip(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        textDirection: TextDirection.rtl,
-        children: [
-          const Icon(Icons.circle, color: Color(0xFFD00000), size: 8),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(fontSize: 15, color: Colors.white70),
-              textAlign: TextAlign.right,
-            ),
-          ),
-        ],
-      ),
-    );
+  
+  Color _getStreakColor(int day) {
+    if (day <= 3) return Colors.grey;
+    if (day <= 7) return Colors.green;
+    if (day <= 14) return Colors.blue;
+    return Colors.purple;
   }
 }
 
-// ================= 5. التطبيق العملي المتقدم =================
+
+
+
+
+
+
+
+
+
+
+
+// ================= التطبيق العملي المتقدم =================
 class PracticePage extends StatelessWidget {
   const PracticePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('التطبيق العملي المتقدم 💡')),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF1E3A5F), Color(0xFF0F1B33)],
+    return DefaultTabController(
+      length: 6,
+      child: Scaffold(
+        backgroundColor: Color(0xFF0F1626),
+        appBar: AppBar(
+          title: const Text('التطبيق العملي المتقدم'),
+          backgroundColor: Color(0xFF122235),
+          elevation: 2,
+          bottom: const TabBar(
+            isScrollable: true,
+            indicatorColor: Color(0xFF4ECDC4),
+            tabs: [
+              Tab(icon: Icon(Icons.lock), text: 'كلمات المرور'),
+              Tab(icon: Icon(Icons.link), text: 'تحليل الروابط'),
+              Tab(icon: Icon(Icons.book), text: 'الموسوعة'),
+              Tab(icon: Icon(Icons.style), text: 'البطاقات'),
+              Tab(icon: Icon(Icons.question_answer), text: 'الأسئلة'),
+              Tab(icon: Icon(Icons.videogame_asset), text: 'اللعبة'),
+            ],
           ),
         ),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF0F1626), Color(0xFF061022)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+          child: const TabBarView(
             children: [
-              const SizedBox(height: 20),
-              const Text(
-                '🔐 فحص كلمة المرور المتقدم',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECDC4),
-                ),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 10),
-              const PasswordCheckerPro(),
-              const SizedBox(height: 20),
-              const Text(
-                '🔍 كشف الروابط الضارة (Phishing Detector)',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECDC4),
-                ),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 10),
-              const PhishingDetector(),
-              const SizedBox(height: 20),
-              const Text(
-                '📘 موسوعة الأمن (Cyber Glossary)',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECDC4),
-                ),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 10),
-              const GlossaryList(),
-              const SizedBox(height: 20),
-              const Text(
-                '🃏 البطاقات التفاعلية',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECDC4),
-                ),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 10),
-              const FlashcardsSection(),
-              const SizedBox(height: 20),
-              const Text(
-                '❓ الأسئلة السريعة',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECDC4),
-                ),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 10),
-              const FAQBot(),
-              const SizedBox(height: 20),
-              const Text(
-                '🎮 لعبة الحماية الرقمية',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF4ECDC4),
-                ),
-                textAlign: TextAlign.right,
-              ),
-              const SizedBox(height: 10),
-              const SecurityGame(),
+              Padding(padding: EdgeInsets.all(12), child: PasswordCheckerPro()),
+              Padding(padding: EdgeInsets.all(12), child: PhishingDetector()),
+              Padding(padding: EdgeInsets.all(12), child: GlossaryList()),
+              Padding(padding: EdgeInsets.all(12), child: FlashcardsSection()),
+              Padding(padding: EdgeInsets.all(12), child: FAQBot()),
+              Padding(padding: EdgeInsets.all(12), child: SecurityGame()),
             ],
           ),
         ),
@@ -1348,6 +1819,7 @@ class PracticePage extends StatelessWidget {
     );
   }
 }
+
 // ================= فحص كلمة المرور المتقدم =================
 class PasswordCheckerPro extends StatefulWidget {
   const PasswordCheckerPro({super.key});
@@ -1362,7 +1834,7 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
   String _strength = 'ضعيفة';
   Color _strengthColor = Colors.red;
   double _strengthBar = 0.0;
-  String _comparison = ''; // ✅ تم الاحتفاظ بمقارنة كلمات المرور الشائعة فقط
+  String _comparison = '';
   List<Map<String, dynamic>> _criteria = [
     {'text': 'على الأقل 8 أحرف', 'met': false, 'weight': 1},
     {'text': 'حرف كبير (A-Z)', 'met': false, 'weight': 1},
@@ -1374,28 +1846,23 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
   void _checkPassword() {
     String password = _controller.text;
     int score = 0;
-
-    // --- إذا كانت فارغة، نعيد الضبط ---
     if (password.isEmpty) {
       _resetState();
       if (mounted) setState(() {});
       return;
     }
-
-    // --- تحليل المعايير ---
     _criteria[0]['met'] = password.length >= 8;
     _criteria[1]['met'] = RegExp(r'[A-Z]').hasMatch(password);
     _criteria[2]['met'] = RegExp(r'[a-z]').hasMatch(password);
     _criteria[3]['met'] = RegExp(r'[0-9]').hasMatch(password);
-    _criteria[4]['met'] = RegExp(r'''[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\'",<>\.\?\/\\|]''').hasMatch(password);
-
+    _criteria[4]['met'] = RegExp(
+            r'''[!@#\$%\^&\*\(\)_\+\-=\[\]\{\};:\'",<>\.\?\/\\|]''')
+        .hasMatch(password);
     for (var criterion in _criteria) {
       if (criterion['met']) {
         score += criterion['weight'] as int;
       }
     }
-
-    // --- تقييم القوة ---
     if (score <= 3) {
       _strength = 'ضعيفة';
       _strengthColor = Colors.red;
@@ -1409,10 +1876,7 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
       _strengthColor = Colors.green;
       _strengthBar = 1.0;
     }
-
-    // --- مقارنة مع كلمات مرور شائعة ---
     _compareWithCommonPasswords(password);
-
     if (mounted) {
       setState(() {});
     }
@@ -1423,7 +1887,6 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
     _strengthColor = Colors.red;
     _strengthBar = 0.0;
     _comparison = '';
-    // إعادة ضبط حالة المعايير
     for (var criterion in _criteria) {
       criterion['met'] = false;
     }
@@ -1431,14 +1894,24 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
 
   void _compareWithCommonPasswords(String password) {
     List<String> commonPasswords = [
-      '123456', 'password', '123456789', '12345678', '12345', '1234567',
-      'qwerty', 'abc123', 'password1', '111111', '1234567890', 'iloveyou'
+      '123456',
+      'password',
+      '123456789',
+      '12345678',
+      '12345',
+      '1234567',
+      'qwerty',
+      'abc123',
+      'password1',
+      '111111',
+      '1234567890',
+      'iloveyou'
     ];
-
     if (commonPasswords.contains(password.toLowerCase())) {
       _comparison = '⚠️ هذه كلمة مرور شائعة جدًا وسهلة الاختراق!';
     } else if (password.length < 8) {
-      _comparison = '⚠️ كلمة المرور قصيرة جدًا — يُنصح باستخدام 12 حرفًا فأكثر.';
+      _comparison =
+          '⚠️ كلمة المرور قصيرة جدًا — يُنصح باستخدام 12 حرفًا فأكثر.';
     } else {
       _comparison = '✅ كلمة المرور غير شائعة — هذا جيد للأمان.';
     }
@@ -1482,7 +1955,8 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                border: Border.all(
+                    color: Colors.white.withOpacity(0.3), width: 1),
               ),
               child: TextField(
                 controller: _controller,
@@ -1494,10 +1968,13 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
                   hintText: 'أدخل كلمة المرور',
                   hintStyle: const TextStyle(color: Colors.white70),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+                      _isPasswordVisible
+                          ? Icons.visibility_off
+                          : Icons.visibility,
                       color: Colors.white70,
                     ),
                     onPressed: () {
@@ -1512,7 +1989,6 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
               ),
             ),
             const SizedBox(height: 16),
-            // --- قوة كلمة المرور ---
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -1546,22 +2022,27 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
               ],
             ),
             const SizedBox(height: 16),
-            // --- مقارنة مع كلمات مرور شائعة ---
             if (_comparison.isNotEmpty)
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: _comparison.contains('⚠️') ? Colors.red.withOpacity(0.2) : Colors.green.withOpacity(0.2),
+                  color: _comparison.contains('⚠️')
+                      ? Colors.red.withOpacity(0.2)
+                      : Colors.green.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: _comparison.contains('⚠️') ? Colors.red : Colors.green,
+                    color: _comparison.contains('⚠️')
+                        ? Colors.red
+                        : Colors.green,
                     width: 1,
                   ),
                 ),
                 child: Text(
                   _comparison,
                   style: TextStyle(
-                    color: _comparison.contains('⚠️') ? Colors.red : Colors.green,
+                    color: _comparison.contains('⚠️')
+                        ? Colors.red
+                        : Colors.green,
                     fontSize: 14,
                     height: 1.5,
                   ),
@@ -1569,7 +2050,6 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
                 ),
               ),
             const SizedBox(height: 20),
-            // --- المعايير --- ✅ تظهر فقط إذا كان هناك نص مدخل
             if (_controller.text.isNotEmpty) ...[
               const Text(
                 'الشروط المطلوبة:',
@@ -1588,8 +2068,12 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
                     textDirection: TextDirection.rtl,
                     children: [
                       Icon(
-                        criterion['met']! ? Icons.check_circle : Icons.cancel,
-                        color: criterion['met']! ? Colors.green : Colors.red,
+                        criterion['met']!
+                            ? Icons.check_circle
+                            : Icons.cancel,
+                        color: criterion['met']!
+                            ? Colors.green
+                            : Colors.red,
                         size: 16,
                       ),
                       const SizedBox(width: 8),
@@ -1597,7 +2081,9 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
                         child: Text(
                           criterion['text']!,
                           style: TextStyle(
-                            color: criterion['met']! ? Colors.white : Colors.white70,
+                            color: criterion['met']!
+                                ? Colors.white
+                                : Colors.white70,
                             fontSize: 14,
                           ),
                           textAlign: TextAlign.right,
@@ -1609,14 +2095,14 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
               }).toList(),
               const SizedBox(height: 20),
             ],
-            // --- رسالة توعوية ---
             if (_controller.text.isNotEmpty)
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: _strengthColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: _strengthColor.withOpacity(0.5), width: 1.5),
+                  border: Border.all(
+                      color: _strengthColor.withOpacity(0.5), width: 1.5),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1637,9 +2123,9 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
                     ),
                     const SizedBox(height: 8),
                     if (_strength != 'قوية')
-                      Text(
+                      const Text(
                         '💡 نصيحة: استخدم 12 حرفًا فأكثر، مع مزيج من الأحرف الكبيرة والصغيرة والأرقام والرموز.',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white70,
                           fontSize: 13,
                           height: 1.5,
@@ -1656,7 +2142,7 @@ class _PasswordCheckerProState extends State<PasswordCheckerPro> {
   }
 }
 
-// ================= كشف الروابط الضارة (Phishing Detector) =================
+// ================= كشف الروابط الضارة =================
 class PhishingDetector extends StatefulWidget {
   const PhishingDetector({super.key});
 
@@ -1672,36 +2158,25 @@ class _PhishingDetectorState extends State<PhishingDetector> {
 
   void _analyzeLink() {
     String url = _urlController.text.trim();
-
     if (url.isEmpty) {
       _showResult('يرجى إدخال رابط للتحليل.', Colors.orange);
       return;
     }
-
-    // --- إضافة https:// إذا لم تكن موجودة ---
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = 'https://$url';
     }
-
     setState(() {
       _isLoading = true;
       _result = '';
     });
-
-    // --- محاكاة تأخير بسيط لتحسين UX ---
     Future.delayed(const Duration(milliseconds: 800), () {
       if (!mounted) return;
-
       bool isSafe = true;
       List<String> warnings = [];
-
-      // --- 1. التحقق من HTTPS ---
       if (!url.startsWith('https://')) {
         isSafe = false;
         warnings.add('• لا يستخدم تشفير HTTPS الآمن.');
       }
-
-      // --- 2. التحقق من وجود IP بدلاً من Domain ---
       String? host;
       try {
         Uri uri = Uri.parse(url);
@@ -1709,36 +2184,45 @@ class _PhishingDetectorState extends State<PhishingDetector> {
       } catch (e) {
         setState(() {
           _isLoading = false;
-          _result = 'رابط غير صالح. تأكد من صيغته (مثال: https://example.com)';
+          _result =
+              'رابط غير صالح. تأكد من صيغته (مثال: https://example.com)';
           _resultColor = Colors.red;
         });
         return;
       }
-
-      // --- نمط IP (IPv4 بسيط) ---
       final ipRegex = RegExp(r'^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$');
       if (ipRegex.hasMatch(host!)) {
         isSafe = false;
-        warnings.add('• يستخدم عنوان IP مباشر بدلاً من اسم نطاق (Domain)، وهذا غير معتاد وقد يكون خطيرًا.');
+        warnings.add(
+            '• يستخدم عنوان IP مباشر بدلاً من اسم نطاق (Domain)، وهذا غير معتاد وقد يكون خطيرًا.');
       }
-
-      // --- 3. التحقق من كلمات مشبوهة في الرابط ---
-      List<String> suspiciousWords = ['login', 'secure', 'verify', 'account', 'update', 'free', 'win', 'prize', 'gift'];
+      List<String> suspiciousWords = [
+        'login',
+        'secure',
+        'verify',
+        'account',
+        'update',
+        'free',
+        'win',
+        'prize',
+        'gift'
+      ];
       String urlLower = url.toLowerCase();
-
       for (String word in suspiciousWords) {
         if (urlLower.contains(word) && !host.contains(word)) {
           warnings.add('• يحتوي على كلمة مشبوهة: "$word".');
         }
       }
-
-      // --- عرض النتيجة ---
       if (isSafe && warnings.isEmpty) {
         _showResult('✅ الرابط آمن للاستخدام.', Colors.green);
       } else if (isSafe) {
-        _showResult('⚠️ الرابط يستخدم HTTPS، لكن:\n' + warnings.join('\n'), Colors.orange);
+        _showResult(
+            '⚠️ الرابط يستخدم HTTPS، لكن:\n${warnings.join('\n')}',
+            Colors.orange);
       } else {
-        _showResult('🚨 الرابط قد يكون خطيرًا للأسباب التالية:\n' + warnings.join('\n'), Colors.red);
+        _showResult(
+            '🚨 الرابط قد يكون خطيرًا للأسباب التالية:\n${warnings.join('\n')}',
+            Colors.red);
       }
     });
   }
@@ -1779,9 +2263,9 @@ class _PhishingDetectorState extends State<PhishingDetector> {
               textAlign: TextAlign.right,
             ),
             const SizedBox(height: 16),
-            Text(
+            const Text(
               'أدخل أي رابط (URL) وسأحلله لك فورًا لتحديد مدى أمانه.',
-              style: const TextStyle(fontSize: 14, color: Colors.white70),
+              style: TextStyle(fontSize: 14, color: Colors.white70),
               textAlign: TextAlign.right,
             ),
             const SizedBox(height: 20),
@@ -1799,7 +2283,8 @@ class _PhishingDetectorState extends State<PhishingDetector> {
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 suffixIcon: _urlController.text.isNotEmpty
                     ? IconButton(
                         icon: const Icon(Icons.clear, color: Colors.white54),
@@ -1813,21 +2298,19 @@ class _PhishingDetectorState extends State<PhishingDetector> {
             ElevatedButton.icon(
               onPressed: _isLoading ? null : _analyzeLink,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF4ECDC4),
+                backgroundColor: Color(0xFF4ECDC4),
                 foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
+                    borderRadius: BorderRadius.circular(16)),
               ),
               icon: _isLoading
                   ? const SizedBox(
                       width: 20,
                       height: 20,
                       child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.black,
-                      ),
+                          strokeWidth: 2, color: Colors.black),
                     )
                   : const Icon(Icons.search),
               label: Text(
@@ -1867,16 +2350,37 @@ class _PhishingDetectorState extends State<PhishingDetector> {
 
 // ================= موسوعة الأمن =================
 class GlossaryList extends StatelessWidget {
-  const GlossaryList({super.key}); // ✅ Added const constructor
+  const GlossaryList({super.key});
 
   static const List<Map<String, String>> terms = [
-    const {'term': 'Phishing', 'meaning': 'التصيد: محاولة خداعك لسرقة بياناتك عبر روابط أو رسائل تبدو رسمية.'},
-    const {'term': 'Malware', 'meaning': 'برامج خبيثة: برمجيات تضر بجهازك، مثل الفيروسات أو برامج التجسس.'},
-    const {'term': 'Firewall', 'meaning': 'جدار الحماية: نظام يمنع الوصول غير المصرح به إلى جهازك.'},
-    const {'term': '2FA', 'meaning': 'المصادقة الثنائية: طبقة أمان إضافية تتطلب شيئين للدخول (كلمة مرور + هاتف).'},
-    const {'term': 'VPN', 'meaning': 'شبكة افتراضية خاصة: تحمي اتصالك بالإنترنت من المراقبة.'},
-    const {'term': 'Encryption', 'meaning': 'التشفير: تحويل البيانات إلى شكل غير قابل للقراءة من قبل الغرباء.'},
-    const {'term': 'Ransomware', 'meaning': 'برمجية فدية: تُشفّر ملفاتك وتطلب فدية لاستعادتها.'},
+    {
+      'term': 'Phishing',
+      'meaning': 'التصيد: محاولة خداعك لسرقة بياناتك عبر روابط أو رسائل تبدو رسمية.'
+    },
+    {
+      'term': 'Malware',
+      'meaning': 'برامج خبيثة: برمجيات تضر بجهازك، مثل الفيروسات أو برامج التجسس.'
+    },
+    {
+      'term': 'Firewall',
+      'meaning': 'جدار الحماية: نظام يمنع الوصول غير المصرح به إلى جهازك.'
+    },
+    {
+      'term': '2FA',
+      'meaning': 'المصادقة الثنائية: طبقة أمان إضافية تتطلب شيئين للدخول (كلمة مرور + هاتف).'
+    },
+    {
+      'term': 'VPN',
+      'meaning': 'شبكة افتراضية خاصة: تحمي اتصالك بالإنترنت من المراقبة.'
+    },
+    {
+      'term': 'Encryption',
+      'meaning': 'التشفير: تحويل البيانات إلى شكل غير قابل للقراءة من قبل الغرباء.'
+    },
+    {
+      'term': 'Ransomware',
+      'meaning': 'برمجية فدية: تُشفّر ملفاتك وتطلب فدية لاستعادتها.'
+    },
   ];
 
   @override
@@ -1885,11 +2389,13 @@ class GlossaryList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: terms.length,
-      separatorBuilder: (_, __) => const Divider(color: Colors.grey, indent: 20, endIndent: 20),
+      separatorBuilder: (_, __) =>
+          const Divider(color: Colors.grey, indent: 20, endIndent: 20),
       itemBuilder: (context, index) {
         final term = terms[index];
         return ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           title: Text(
             term['term']!,
             style: const TextStyle(
@@ -1921,107 +2427,70 @@ class FlashcardsSection extends StatefulWidget {
   _FlashcardsSectionState createState() => _FlashcardsSectionState();
 }
 
-class _FlashcardsSectionState extends State<FlashcardsSection> with SingleTickerProviderStateMixin {
+class _FlashcardsSectionState extends State<FlashcardsSection>
+    with SingleTickerProviderStateMixin {
   int _currentIndex = 0;
-  bool _isFlipped = false;
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
+  bool _isFront = true; // true = السؤال، false = الإجابة
   final List<Map<String, String>> flashcards = [
     {
       'question': 'ما هو التصيد الإلكتروني؟',
-      'answer': 'محاولة خداعك لسرقة بياناتك عبر روابط أو رسائل تبدو رسمية.'
+      'answer': 'محاولة خداعك لسرقة بياناتك عبر روابط أو رسائل تبدو رسمية.',
     },
     {
       'question': 'لماذا نفعل المصادقة الثنائية؟',
-      'answer': 'لإضافة طبقة حماية إضافية، حتى لو عرف أحد كلمة المرور.'
+      'answer': 'لإضافة طبقة حماية إضافية، حتى لو عرف أحد كلمة المرور.',
     },
     {
       'question': 'كيف نحمي بطاقة الدفع؟',
-      'answer': 'بعدم كتابة بياناتها على مواقع غير موثوقة، واستخدام بطاقة افتراضية.'
+      'answer': 'بعدم كتابة بياناتها على مواقع غير موثوقة، واستخدام بطاقة افتراضية.',
     },
     {
-      'question': 'ماذا نفعل إذا تعرضنا لابتزاز؟',
-      'answer': 'لا ندفع، نحفظ الأدلة، ونبلغ الجهات المختصة فوراً.'
+      'question': 'ماذا نفعل إذا تعرضنا لابتزاز إلكتروني؟',
+      'answer': 'لا ندفع، نحفظ الأدلة، ونبلغ الجهات المختصة فوراً.',
     },
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-    _animation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   void _flipCard() {
-    if (_isFlipped) {
-      _controller.reverse();
-    } else {
-      _controller.forward();
-    }
-    if (mounted) {
-      setState(() {
-        _isFlipped = !_isFlipped;
-      });
-    }
+    setState(() {
+      _isFront = !_isFront;
+    });
   }
 
   void _nextCard() {
     if (_currentIndex < flashcards.length - 1) {
-      if (mounted) {
-        setState(() {
-          _currentIndex++;
-          _isFlipped = false;
-          _controller.reset();
-        });
-      }
+      setState(() {
+        _currentIndex++;
+        _isFront = true;
+      });
     } else {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🎉 أكملت جميع البطاقات!'),
-            backgroundColor: Color(0xFF4ECDC4),
-            duration: Duration(seconds: 2),
-          ),
-        );
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) {
-            setState(() {
-              _currentIndex = 0;
-              _isFlipped = false;
-              _controller.reset();
-            });
-          }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('🎉 أكملت جميع البطاقات!'),
+          backgroundColor: Color(0xFF4ECDC4),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      Future.delayed(const Duration(seconds: 2), () {
+        setState(() {
+          _currentIndex = 0;
+          _isFront = true;
         });
-      }
+      });
     }
   }
 
   void _previousCard() {
     if (_currentIndex > 0) {
-      if (mounted) {
-        setState(() {
-          _currentIndex--;
-          _isFlipped = false;
-          _controller.reset();
-        });
-      }
+      setState(() {
+        _currentIndex--;
+        _isFront = true;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentCard = flashcards[_currentIndex];
     return Card(
       color: Colors.white.withOpacity(0.1),
       elevation: 8,
@@ -2045,9 +2514,9 @@ class _FlashcardsSectionState extends State<FlashcardsSection> with SingleTicker
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E3A5F).withOpacity(0.3),
+                color: Color(0xFF1E3A5F).withOpacity(0.3),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF4ECDC4), width: 1),
+                border: Border.all(color: Color(0xFF4ECDC4), width: 1),
               ),
               child: Text(
                 'البطاقة ${_currentIndex + 1} من ${flashcards.length}',
@@ -2058,31 +2527,91 @@ class _FlashcardsSectionState extends State<FlashcardsSection> with SingleTicker
                 ),
               ),
             ),
-            GestureDetector(
-              onTap: _flipCard,
-              child: AnimatedBuilder(
-                animation: _animation,
-                builder: (context, child) {
-                  final angle = _animation.value * 3.14159;
-                  final transform = Matrix4.identity()
-                    ..setEntry(3, 2, 0.001)
-                    ..rotateY(angle);
-                  return Transform(
-                    transform: transform,
-                    alignment: Alignment.center,
-                    child: angle < 1.57
+            Container(
+              height: 220,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFF1A365D), Color(0xFF2C5282)],
+                ),
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 12,
+                    offset: const Offset(0, 6),
+                  )
+                ],
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: _isFront
                         ? _buildCardFace(
-                            flashcards[_currentIndex]['question']!,
-                            Icons.help_outline,
-                            const Color(0xFF1E3A5F),
+                            key: const ValueKey('front'),
+                            text: currentCard['question']!,
+                            icon: Icons.help_outline,
+                            bgColor: Color(0xFF1E3A5F),
                           )
-                        : _buildCardFace(
-                            flashcards[_currentIndex]['answer']!,
-                            Icons.check_circle,
-                            const Color(0xFF4ECDC4),
-                          ),
-                  );
-                },
+                        : const SizedBox.shrink(),
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 500),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: !_isFront
+                        ? _buildCardFace(
+                            key: const ValueKey('back'),
+                            text: currentCard['answer']!,
+                            icon: Icons.check_circle,
+                            bgColor: Color(0xFF4ECDC4),
+                          )
+                        : const SizedBox.shrink(),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            InkWell(
+              onTap: _flipCard,
+              borderRadius: BorderRadius.circular(30),
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 32),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                      color: Colors.white.withOpacity(0.3), width: 1),
+                ),
+                child: Text(
+                  _isFront ? 'أظهر الإجابة' : 'أظهر السؤال',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -2093,32 +2622,48 @@ class _FlashcardsSectionState extends State<FlashcardsSection> with SingleTicker
                   onPressed: _currentIndex > 0 ? _previousCard : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.grey.shade700,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
                   ),
                   icon: const Icon(Icons.arrow_back_ios_new, size: 16),
-                  label: const Text('السابق'),
+                  label: const Text(
+                    'السابق',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
                 ElevatedButton.icon(
                   onPressed: _nextCard,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4ECDC4),
+                    backgroundColor: Color(0xFF4ECDC4),
                     foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
                   ),
-                  icon: Icon(_currentIndex < flashcards.length - 1 ? Icons.arrow_forward_ios : Icons.refresh),
-                  label: Text(_currentIndex < flashcards.length - 1 ? 'التالي' : 'إعادة'),
+                  icon: Icon(_currentIndex < flashcards.length - 1
+                      ? Icons.arrow_forward_ios
+                      : Icons.refresh),
+                  label: Text(
+                    _currentIndex < flashcards.length - 1
+                        ? 'التالي'
+                        : 'إعادة',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
-            const Padding(
-              padding: EdgeInsets.only(top: 12),
-              child: Text(
-                'انقر على البطاقة لقلبها 🔄',
-                style: TextStyle(fontSize: 12, color: Colors.white70, fontStyle: FontStyle.italic),
-                textAlign: TextAlign.center,
+            const SizedBox(height: 16),
+            const Text(
+              'انقر على البطاقة أو الزر أدناه لتبديل الوجه',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.white70,
+                fontStyle: FontStyle.italic,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -2126,37 +2671,40 @@ class _FlashcardsSectionState extends State<FlashcardsSection> with SingleTicker
     );
   }
 
-  Widget _buildCardFace(String text, IconData icon, Color bgColor) {
+  Widget _buildCardFace({
+    required Key key,
+    required String text,
+    required IconData icon,
+    required Color bgColor,
+  }) {
     return Container(
-      height: 200,
+      key: key,
+      padding: const EdgeInsets.all(24),
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      height: double.infinity,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          )
-        ],
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Icon(icon, size: 30, color: Colors.white),
-          const SizedBox(height: 16),
+          Icon(
+            icon,
+            size: 36,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 20),
           Expanded(
             child: Text(
               text,
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 18,
                 color: Colors.white,
-                height: 1.6,
                 fontWeight: FontWeight.w500,
+                height: 1.6,
               ),
               textAlign: TextAlign.right,
               softWrap: true,
@@ -2179,14 +2727,20 @@ class FAQBot extends StatefulWidget {
 class _FAQBotState extends State<FAQBot> {
   String _answer = '';
   final Map<String, String> faq = {
-    'بريد': 'لتحمي بريدك: استخدم كلمة مرور قوية، فعل 2FA، ولا تفتح روابط مشبوهة.',
-    'حساب': 'استخدم كلمة مرور قوية، فعل 2FA، ولا تشارك بياناتك مع أحد.',
-    'دفع': 'لا تكتب بيانات بطاقة الدفع على مواقع غير موثوقة. تأكد من أن الموقع يبدأ بـ https://.',
-    'طفل': 'استخدم أدوات الرقابة الأبوية، حدّد وقت الشاشة، وعلّمه ألا يتحدث مع غرباء.',
+    'بريد':
+        'لتحمي بريدك: استخدم كلمة مرور قوية، فعل 2FA، ولا تفتح روابط مشبوهة.',
+    'حساب':
+        'استخدم كلمة مرور قوية، فعل 2FA، ولا تشارك بياناتك مع أحد.',
+    'دفع':
+        'لا تكتب بيانات بطاقة الدفع على مواقع غير موثوقة. تأكد من أن الموقع يبدأ بـ https://.',
+    'طفل':
+        'استخدم أدوات الرقابة الأبوية، حدّد وقت الشاشة، وعلّمه ألا يتحدث مع غرباء.',
     'روابط': 'لا تنقر على روابط من جهات مجهولة. قد تكون تصيداً إلكترونياً.',
     'سرقة': 'لتجنب السرقة: لا تستخدم كلمات مرور بسيطة، ولا تفتح روابط غريبة.',
-    'تحديث': 'حدّث تطبيقاتك وهاتفك باستمرار. التحديثات تصلح الثغرات الأمنية.',
-    'خصوصية': 'اجعل حساباتك خاصة، ولا تشارك معلوماتك الشخصية على الإنترنت.',
+    'تحديث':
+        'حدّث تطبيقاتك وهاتفك باستمرار. التحديثات تصلح الثغرات الأمنية.',
+    'خصوصية':
+        'اجعل حساباتك خاصة، ولا تشارك معلوماتك الشخصية على الإنترنت.',
   };
 
   void _ask(String q) {
@@ -2223,11 +2777,22 @@ class _FAQBotState extends State<FAQBot> {
               spacing: 12,
               runSpacing: 12,
               children: [
-                for (String q in ['بريد', 'حساب', 'دفع', 'طفل', 'روابط', 'سرقة', 'تحديث', 'خصوصية'])
-                  GestureDetector(
+                for (String q in [
+                  'بريد',
+                  'حساب',
+                  'دفع',
+                  'طفل',
+                  'روابط',
+                  'سرقة',
+                  'تحديث',
+                  'خصوصية'
+                ])
+                  InkWell(
                     onTap: () => _ask(q),
+                    borderRadius: BorderRadius.circular(30),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 12),
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
@@ -2236,10 +2801,12 @@ class _FAQBotState extends State<FAQBot> {
                           ],
                         ),
                         borderRadius: BorderRadius.circular(30),
-                        border: Border.all(color: const Color(0xFF4ECDC4).withOpacity(0.5), width: 1.5),
+                        border: Border.all(
+                            color: Color(0xFF4ECDC4).withOpacity(0.5),
+                            width: 1.5),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF4ECDC4).withOpacity(0.2),
+                            color: Color(0xFF4ECDC4).withOpacity(0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           )
@@ -2268,12 +2835,13 @@ class _FAQBotState extends State<FAQBot> {
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFF4ECDC4), width: 2),
+                    border: Border.all(color: Color(0xFF4ECDC4), width: 2),
                   ),
                   child: Row(
                     textDirection: TextDirection.rtl,
                     children: [
-                      const Icon(Icons.check_circle, color: Color(0xFF4ECDC4), size: 20),
+                      const Icon(Icons.check_circle,
+                          color: Color(0xFF4ECDC4), size: 20),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
@@ -2306,7 +2874,8 @@ class SecurityGame extends StatefulWidget {
   _SecurityGameState createState() => _SecurityGameState();
 }
 
-class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderStateMixin {
+class _SecurityGameState extends State<SecurityGame>
+    with SingleTickerProviderStateMixin {
   int _score = 0;
   int _questionIndex = 0;
   bool _answerSubmitted = false;
@@ -2333,7 +2902,7 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
       'correct': 1,
     },
     {
-      'question': 'ما الفرق بين "https://" و "http://"؟',
+      'question': 'ما الفرق بين "https://" و "http://"?',
       'options': ['لا فرق', 'https:// يعني أن الموقع آمن'],
       'correct': 1,
     },
@@ -2341,17 +2910,14 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
 
   void _checkAnswer(String option, int selectedIndex) {
     if (_answerSubmitted) return;
-
     if (mounted) {
       setState(() {
         _selectedOption = option;
         _answerSubmitted = true;
       });
     }
-
     final correctIndex = questions[_questionIndex]['correct'];
     final isCorrect = selectedIndex == correctIndex;
-
     if (isCorrect) {
       _score++;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -2382,7 +2948,6 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
         ),
       );
     }
-
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
       if (_questionIndex < questions.length - 1) {
@@ -2407,11 +2972,14 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
       context: context,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        backgroundColor: const Color(0xFF1E3A5F),
+        backgroundColor: Color(0xFF1E3A5F),
         title: const Text(
           '🎉 انتهت اللعبة!',
           textAlign: TextAlign.center,
-          style: TextStyle(color: Color(0xFF4ECDC4), fontSize: 24, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Color(0xFF4ECDC4),
+              fontSize: 24,
+              fontWeight: FontWeight.bold),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -2445,9 +3013,11 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
               }
             },
             style: TextButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              backgroundColor: const Color(0xFF4ECDC4),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+              backgroundColor: Color(0xFF4ECDC4),
             ),
             child: const Text(
               'إعادة اللعب 🔄',
@@ -2485,7 +3055,6 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     final q = questions[_questionIndex];
     final correctIndex = q['correct'];
-
     return Card(
       color: Colors.white.withOpacity(0.1),
       elevation: 8,
@@ -2499,9 +3068,9 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: const Color(0xFF4ECDC4).withOpacity(0.2),
+                color: Color(0xFF4ECDC4).withOpacity(0.2),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF4ECDC4), width: 1.5),
+                border: Border.all(color: Color(0xFF4ECDC4), width: 1.5),
               ),
               child: Text(
                 'السؤال ${_questionIndex + 1} من ${questions.length}',
@@ -2529,31 +3098,36 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
               final isCorrect = i == correctIndex;
               final isSelected = _selectedOption == option;
               Color? buttonColor;
-
               if (!_answerSubmitted) {
-                buttonColor = const Color(0xFF1E3A5F);
+                buttonColor = Color(0xFF1E3A5F);
               } else {
                 if (isSelected) {
                   buttonColor = isCorrect ? Colors.green : Colors.red;
                 } else {
-                  buttonColor = isCorrect ? Colors.green.withOpacity(0.3) : null;
+                  buttonColor =
+                      isCorrect ? Colors.green.withOpacity(0.3) : null;
                 }
               }
-
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 child: ElevatedButton(
-                  onPressed: _answerSubmitted ? null : () => _checkAnswer(option, i),
+                  onPressed: _answerSubmitted
+                      ? null
+                      : () => _checkAnswer(option, i),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: buttonColor,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
+                        borderRadius: BorderRadius.circular(16)),
                     elevation: 4,
                     side: BorderSide(
-                      color: isSelected ? Colors.white : buttonColor == const Color(0xFF1E3A5F) ? Colors.white24 : Colors.transparent,
+                      color: isSelected
+                          ? Colors.white
+                          : buttonColor == Color(0xFF1E3A5F)
+                              ? Colors.white24
+                              : Colors.transparent,
                       width: isSelected ? 2 : 1,
                     ),
                   ),
@@ -2563,7 +3137,8 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
                     children: [
                       Text(
                         option,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                         textAlign: TextAlign.right,
                       ),
                       if (_answerSubmitted)
@@ -2584,76 +3159,148 @@ class _SecurityGameState extends State<SecurityGame> with SingleTickerProviderSt
   }
 }
 
-// ================= البوت الذكي =================
-class ChatBotScreen extends StatefulWidget {
-  const ChatBotScreen({super.key});
+// ================= نماذج الهجوم =================
+class SimpleAttack {
+  final String title;
+  final String icon;
+  final Color color;
+  final List<SimpleStep> steps;
+  final String tip;
 
-  @override
-  State<ChatBotScreen> createState() => _ChatBotScreenState();
+  const SimpleAttack({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.steps,
+    required this.tip,
+  });
 }
 
-class _ChatBotScreenState extends State<ChatBotScreen> {
-  final TextEditingController _controller = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final CyberKnowledgeBase _knowledgeBase = CyberKnowledgeBase();
-  List<Map<String, String>> messages = [];
+class SimpleStep {
+  final String illustration;
+  final String description;
+
+  const SimpleStep({
+    required this.illustration,
+    required this.description,
+  });
+}
+
+// ================= مختبر محاكاة الهجمات =================
+class AttackSimulatorLab extends StatefulWidget {
+  const AttackSimulatorLab({Key? key}) : super(key: key);
 
   @override
-  void initState() {
-    super.initState();
-    _addBotMessage(
-      '👋 أهلاً بك في **CyberSecurity Pro**!\n'
-      'أنا الذكاء الاصطناعي المتخصص في الأمن السيبراني. \n'
-      'سأجيبك بدقة على أي سؤال يتعلق بالحماية من الهكر، البرمجيات الخبيثة، التصيد، وهندسة اجتماعية.\n'
-      '💡 **جرب أن تسأل عن:**\n'
-      '• كيفية حماية حسابك من الاختراق؟\n'
-      '• ما هو الـ Phishing وكيف أتجنبه؟\n'
-      '• أفضل إعدادات الخصوصية على واتساب؟\n'
-      '• كيف أحمي طفلي على الإنترنت؟\n'
-      '• ما الفرق بين Firewall و Antivirus؟\n'
-      '• كيف أعرف أن جهازي مخترق؟\n'
-      'أنا هنا لمساعدتك 24/7. اسألني الآن! 🛡️',
-    );
-  }
+  State<AttackSimulatorLab> createState() => _AttackSimulatorLabState();
+}
 
-  void _addBotMessage(String text) {
-    if (!mounted) return;
+class _AttackSimulatorLabState extends State<AttackSimulatorLab> {
+  int _currentStep = 0;
+  SimpleAttack? _selectedAttack;
+  final List<SimpleAttack> _attacks = [
+    SimpleAttack(
+      title: '💥 محاولة تخمين كلمة المرور',
+      icon: '🔑',
+      color: Color(0xFF4ECDC4),
+      tip: '✅ نصيحتنا: استخدم كلمات مرور طويلة وفعّل المصادقة الثنائية.',
+      steps: [
+        SimpleStep(
+          illustration: '🕵️‍♂️',
+          description:
+              'شخص مجهول يحاول الدخول إلى حسابك عبر تجربة كلمات مرور شائعة مثل "123456" أو "password".',
+        ),
+        SimpleStep(
+          illustration: '🤖',
+          description: 'يستخدم برنامجًا يجرب آلاف المحاولات في الدقيقة!',
+        ),
+        SimpleStep(
+          illustration: '🔓',
+          description: 'إذا كانت كلمة مرورك ضعيفة... سيتمكن من الدخول!',
+        ),
+        SimpleStep(
+          illustration: '🛡️',
+          description:
+              'لكن إذا فعّلت "المصادقة الثنائية"، فحتى لو عرف كلمة المرور... لن يدخل!',
+        ),
+      ],
+    ),
+    SimpleAttack(
+      title: '💉 محاولة سرقة بيانات الموقع',
+      icon: '💻',
+      color: Color(0xFFE74C3C),
+      tip: '✅ نصيحتنا: لا تدخل بياناتك في مواقع مشبوهة وأبلغ الدعم عن الأخطاء.',
+      steps: [
+        SimpleStep(
+          illustration: '🔍',
+          description:
+              'المخترق يكتب رموزًا غريبة في حقول الموقع (مثل: "admin\' OR \'1\'=\'1").',
+        ),
+        SimpleStep(
+          illustration: '💥',
+          description: 'إذا كان الموقع غير محمي، تظهر له جميع بيانات المستخدمين!',
+        ),
+        SimpleStep(
+          illustration: '📁',
+          description: 'قد يسرق أسماء المستخدمين، كلمات المرور، وحتى معلومات البطاقات!',
+        ),
+        SimpleStep(
+          illustration: '✅',
+          description: 'المواقع الآمنة تمنع هذا الهجوم تلقائيًا.',
+        ),
+      ],
+    ),
+    SimpleAttack(
+      title: '🌐 محاولة سرقة الجلسة عبر التعليقات',
+      icon: '💬',
+      color: Color(0xFF2ECC71),
+      tip: '✅ نصيحتنا: لا تضغط على روابط غريبة في التعليقات.',
+      steps: [
+        SimpleStep(
+          illustration: '📝',
+          description:
+              'شخص يكتب تعليقًا يحتوي على كود خفي في موقع غير محمي.',
+        ),
+        SimpleStep(
+          illustration: '👁️',
+          description: 'عندما تزور الصفحة، يُنفّذ الكود تلقائيًا في متصفحك!',
+        ),
+        SimpleStep(
+          illustration: '🍪',
+          description:
+              'يُرسل الكود "ملفات تعريف الارتباط" (cookies) الخاصة بك إلى المخترق.',
+        ),
+        SimpleStep(
+          illustration: '👤',
+          description:
+              'يستخدمها لتسجيل الدخول كأنه أنت — دون معرفة كلمة المرور!',
+        ),
+      ],
+    ),
+  ];
+
+  void _startAttack(SimpleAttack attack) {
     setState(() {
-      messages.add({
-        'sender': 'bot',
-        'text': text,
-      });
+      _selectedAttack = attack;
+      _currentStep = 0;
     });
-    _scrollToBottom();
   }
 
-  void _sendMessage() {
-    String userMessage = _controller.text.trim();
-    if (userMessage.isEmpty || !mounted) return;
+  void _nextStep() {
+    if (_currentStep < (_selectedAttack?.steps.length ?? 1) - 1) {
+      setState(() => _currentStep++);
+    }
+  }
 
+  void _prevStep() {
+    if (_currentStep > 0) {
+      setState(() => _currentStep--);
+    }
+  }
+
+  void _reset() {
     setState(() {
-      messages.add({
-        'sender': 'user',
-        'text': userMessage,
-      });
-      _controller.clear();
-    });
-
-    String reply = _knowledgeBase.getReply(userMessage);
-    Future.delayed(const Duration(milliseconds: 600), () {
-      _addBotMessage(reply);
-    });
-  }
-
-  void _scrollToBottom() {
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (mounted && _scrollController.hasClients) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
+      _selectedAttack = null;
+      _currentStep = 0;
     });
   }
 
@@ -2662,108 +3309,63 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Color(0xFF0F172A),
         appBar: AppBar(
-          title: const Text('البوت الذكي 🤖 | CyberSecurity Pro'),
-          backgroundColor: const Color(0xFF1E3A5F),
+          title: const Text(
+            '🛡️ مختبر الأمان البسيط',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          backgroundColor: Color(0xFF1E293B),
+          centerTitle: true,
           actions: [
-            IconButton(
-              icon: const Icon(Icons.clear, color: Colors.white),
-              onPressed: () {
-                setState(() {
-                  messages.clear();
-                  _addBotMessage('🧹 تم مسح المحادثة.\n' + _knowledgeBase.getWelcomeMessage());
-                });
-              },
-              tooltip: 'مسح المحادثة',
-            ),
+            if (_selectedAttack != null)
+              IconButton(
+                icon: const Icon(Icons.home, color: Colors.white),
+                onPressed: _reset,
+                tooltip: 'العودة للقائمة',
+              ),
           ],
         ),
-        body: Column(
+        body: _selectedAttack == null
+            ? _buildAttackSelection()
+            : _buildSimulationView(),
+      ),
+    );
+  }
+
+  Widget _buildAttackSelection() {
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Expanded(
-              child: messages.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'ابدأ المحادثة بكتابة سؤالك...',
-                        style: TextStyle(color: Colors.white54, fontSize: 18),
-                      ),
-                    )
-                  : ListView.builder(
-                      controller: _scrollController,
-                      itemCount: messages.length,
-                      itemBuilder: (context, index) {
-                        final msg = messages[index];
-                        bool isUser = msg['sender'] == 'user';
-                        return Align(
-                          alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: isUser ? const Color(0xFF4ECDC4) : const Color(0xFF2D3748),
-                              borderRadius: BorderRadius.only(
-                                topLeft: const Radius.circular(18),
-                                topRight: const Radius.circular(18),
-                                bottomLeft: isUser ? const Radius.circular(18) : const Radius.circular(4),
-                                bottomRight: isUser ? const Radius.circular(4) : const Radius.circular(18),
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: SelectionArea(
-                              child: Text(
-                                msg['text']!,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.white,
-                                  height: 1.5,
-                                ),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+            const Text(
+              'اختر سيناريو لتتعلّمه في دقيقة:',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              textAlign: TextAlign.center,
             ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.right,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                      decoration: InputDecoration(
-                        hintText: 'اكتب سؤالك عن الأمن السيبراني...',
-                        hintStyle: const TextStyle(color: Colors.white54, fontSize: 14),
-                        filled: true,
-                        fillColor: Colors.white10,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                      ),
-                      onSubmitted: (_) => _sendMessage(),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  FloatingActionButton(
-                    backgroundColor: const Color(0xFF4ECDC4),
-                    foregroundColor: Colors.black,
-                    onPressed: _sendMessage,
-                    tooltip: 'إرسال',
-                    child: const Icon(Icons.send),
-                  ),
-                ],
+            const SizedBox(height: 40),
+            ..._attacks.map((attack) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: _buildAttackCard(attack),
+                )),
+            const SizedBox(height: 40),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.green, width: 1),
+              ),
+              child: const Text(
+                '✅ كل ما تراه محاكاة بسيطة — لمساعدتك على الفهم، وليس للتخويف.',
+                style: TextStyle(color: Colors.green, fontSize: 14),
+                textAlign: TextAlign.center,
               ),
             ),
           ],
@@ -2772,320 +3374,1332 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
     );
   }
 
+  Widget _buildAttackCard(SimpleAttack attack) {
+    return Card(
+      color: attack.color.withOpacity(0.12),
+      elevation: 6,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: attack.color, width: 1.5),
+      ),
+      child: InkWell(
+        onTap: () => _startAttack(attack),
+        borderRadius: BorderRadius.circular(20),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            children: [
+              Text(
+                attack.icon,
+                style: const TextStyle(fontSize: 48),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                attack.title,
+                style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSimulationView() {
+    final attack = _selectedAttack!;
+    final step = attack.steps[_currentStep];
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: LinearProgressIndicator(
+                    value: (_currentStep + 1) / attack.steps.length,
+                    backgroundColor: Colors.grey[800],
+                    color: attack.color,
+                    minHeight: 8,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  '${_currentStep + 1} / ${attack.steps.length}',
+                  style: const TextStyle(color: Colors.white70),
+                ),
+              ],
+            ),
+          ),
+          Card(
+            color: Color(0xFF1E293B),
+            elevation: 6,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24)),
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    step.illustration,
+                    style: const TextStyle(fontSize: 64),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    step.description,
+                    style: const TextStyle(
+                      fontSize: 19,
+                      color: Colors.white,
+                      height: 1.6,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 30),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              if (_currentStep > 0)
+                ElevatedButton(
+                  onPressed: _prevStep,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey[700],
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 28, vertical: 16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  child: const Text('السابق',
+                      style: TextStyle(fontSize: 17)),
+                ),
+              if (_currentStep == attack.steps.length - 1)
+                ElevatedButton(
+                  onPressed: _reset,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 28, vertical: 16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  child: const Text('إنهاء',
+                      style: TextStyle(fontSize: 17)),
+                )
+              else
+                ElevatedButton(
+                  onPressed: _nextStep,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: attack.color,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 28, vertical: 16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                  ),
+                  child: const Text('التالي',
+                      style: TextStyle(fontSize: 17)),
+                ),
+            ],
+          ),
+          const SizedBox(height: 25),
+          if (_currentStep == attack.steps.length - 1)
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.blue, width: 1.5),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    '✨ نصيحة واقعية يمكنك تطبيقها الآن:',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    attack.tip,
+                    style: const TextStyle(
+                        color: Colors.white, fontSize: 16, height: 1.5),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ================= المساعد الذكي المطور - نسخة مُحسنة للإجابات =================
+// مساعدة لتجنب هجمات التعبيرات النمطية
+extension RegexEscape on String {
+  String escape() {
+    return replaceAll(RegExp(r'([.*+?^${}()|[\]\\])'), r'\$1');
+  }
+}
+
+// هيكل قاعدة المعرفة
+class KnowledgeEntry {
+  final List<String> keywords;
+  final String answer;
+  final String category;
+  final List<String>? relatedTopics;
+  
+  KnowledgeEntry({
+    required this.keywords,
+    required this.answer,
+    required this.category,
+    this.relatedTopics,
+  });
+}
+
+class CyberAssistantPage extends StatefulWidget {
+  const CyberAssistantPage({super.key});
+  
+  @override
+  State<CyberAssistantPage> createState() => _CyberAssistantPageState();
+}
+
+class _CyberAssistantPageState extends State<CyberAssistantPage> {
+  final TextEditingController _controller = TextEditingController();
+  final List<Map<String, String>> _messages = [];
+  final ScrollController _scrollController = ScrollController();
+  bool _isThinking = false;
+  late List<KnowledgeEntry> _knowledgeBase;
+  List<String> _suggestions = [];
+  String? _currentCategory;
+  
+  // تهيئة قاعدة المعرفة الشاملة
+  void _initKnowledgeBase() {
+    _knowledgeBase = [
+      // الأساسيات
+      KnowledgeEntry(
+        keywords: [
+          'ما هو الامن السيبراني',
+          'تعريف الامن السيبراني',
+          'الامن السيبراني هو',
+          'cyber security',
+          'ما هو الأمن السيبراني',
+          'ماهو الامن السيبراني',
+          'مفهوم الامن السيبراني',
+          'الامن السراني',
+          'ماهو الامن السراني',
+          'الامن السيبراني تعريف',
+          'ما معني الامن السيبراني',
+          'الامن السيبراني',
+          'الامن الرقمي',
+          'الحماية الرقمية',
+          'أمن المعلومات',
+        ],
+        answer: 'الأمن السيبراني هو مجموعة من التقنيات والممارسات المصممة لحماية:\n'
+                '• الأنظمة والشبكات\n'
+                '• البرامج والتطبيقات\n'
+                '• البيانات والمعلومات\n'
+                'من الهجمات الرقمية مثل الاختراق، السرقة، التلف. يهدف لضمان:\n'
+                'السرية (عدم الوصول غير المصرح به)\n'
+                'السلامة (عدم التعديل غير المصرح به)\n'
+                'التوافر (الوصول عند الحاجة)\n'
+                'يشمل مجالات: أمن الشبكات، أمن التطبيقات، أمن المعلومات، والاستجابة للحوادث.',
+        category: 'أساسيات',
+        relatedTopics: ['الثغرات الأمنية', 'كيف يفكر الهاكر', 'التوعية الأمنية'],
+      ),
+      // الثغرات الأمنية
+      KnowledgeEntry(
+        keywords: [
+          'ثغرة',
+          'ثغرات',
+          'ثغرات أمنية',
+          'vulnerability',
+          'vulnerabilities',
+          'ما هي الثغرة الأمنية',
+          'انواع الثغرات',
+          ' holes',
+          'exploit',
+          'الثغرات',
+          'ما هي الثغرات',
+          'الثغرات الامنية',
+          'ما هي الثغرة',
+          'نقطة ضعف',
+          'خلل أمني',
+        ],
+        answer: 'الثغرة الأمنية هي نقطة ضعف في النظام يمكن استغلالها للاختراق.\n'
+                'الأنواع الشائعة:\n'
+                '• برمجية: أخطاء في كود البرامج (مثل: ثغرة Log4j)\n'
+                '• تكوين: إعدادات خاطئة في الخوادم أو الأجهزة\n'
+                '• تصميم: عيوب في هيكل النظام نفسه\n'
+                '• بشرية: أخطاء المستخدمين (مثل: كلمات مرور ضعيفة)\n'
+                '• شبكات: نقاط ضعف في بروتوكولات الاتصال\n'
+                'أمثلة واقعية:\n'
+                '• ثغرة "السمكة" (Heartbleed) في بروتوكول التشفير\n'
+                '• ثغرة "الشريان المفتوح" (EternalBlue) المستخدمة في هجوم الفدية',
+        category: 'الثغرات',
+        relatedTopics: ['كيف يفكر الهاكر', 'التصيد الإلكتروني', 'الحماية من الثغرات'],
+      ),
+      // عقلية الهاكر
+      KnowledgeEntry(
+        keywords: [
+          'هاكر',
+          'هاكرز',
+          'مفكر الهكر',
+          'كيف يفكر الهاكر',
+          'عقلية الهاكر',
+          'هكر',
+          'هكرز',
+          'طريقة تفكير المخترق',
+          'استراتيجية الهجوم',
+          'الهاكر',
+          'كيف يفكر الهاكر',
+          'طريقة تفكير الهاكر',
+          'كيف يفكر المخترق',
+          'استراتيجية الهاكر',
+          'كيف يفكر القراصنة',
+          'مخترق',
+          'قرصان',
+        ],
+        answer: 'كيف يفكر الهاكر المحترف؟\n'
+                'المرحلة 1: جمع المعلومات\n'
+                '• بحث عن أهداف عبر وسائل التواصل الاجتماعي\n'
+                '• مسح الشبكات لاكتشاف الثغرات\n'
+                '• جمع معلومات الموظفين (الأسماء، المسميات)\n'
+                'المرحلة 2: التخطيط\n'
+                '• تحديد أضعف نقطة (تقنية أو بشرية)\n'
+                '• اختيار أدوات الهجوم المناسبة\n'
+                '• التخطيط لتجنب أنظمة الكشف\n'
+                'المرحلة 3: التنفيذ\n'
+                '• استغلال الثغرة بهدوء\n'
+                '• التحرك خطوة بخطوة داخل النظام\n'
+                '• إخفاء الآثار لتجنب الاكتشاف\n'
+                'المعلومة الأهم: 95% من الهجمات الناجحة تستغل الخطأ البشري وليس الثغرات التقنية!',
+        category: 'الهندسة الاجتماعية',
+        relatedTopics: ['التصيد الإلكتروني', 'الحماية من الهاكر', 'التوعية الأمنية'],
+      ),
+      // الحماية الشخصية
+      KnowledgeEntry(
+        keywords: [
+          'احمي نفسي',
+          'كيف احمي نفسي',
+          'حماية نفسي',
+          'نصائح امنية',
+          'حماية الحسابات',
+          'كيف احمي حساباتي',
+          'حماية من الاختراق',
+          'الحماية',
+          'نصائح أمنية',
+          'أمان شخصي',
+          'حماية رقمية',
+        ],
+        answer: 'دليل الحماية الشخصية الشامل:\n'
+                'أولاً: كلمات المرور\n'
+                '• استخدم مدير كلمات مرور (Bitwarden, 1Password)\n'
+                '• كلمة مرور فريدة لكل حساب\n'
+                '• 16 حرفاً على الأقل مع رموز وأرقام\n'
+                'ثانياً: المصادقة الثنائية\n'
+                '• فعّلها في جميع الحسابات المهمة\n'
+                '• استخدم تطبيق مصادقة (Google Authenticator)\n'
+                '• احتفظ بمفاتيح الاسترداد في مكان آمن\n'
+                'ثالثاً: السلوك الرقمي\n'
+                '• حدّث أنظمتك وتطبيقاتك فوراً\n'
+                '• تجنب الروابط والمرفقات المشبوهة\n'
+                '• استخدم شبكة خاصة افتراضية (VPN) على الواي فاي العام\n'
+                '• اعمل نسخ احتياطية دورية (قاعدة 3-2-1)',
+        category: 'الحماية',
+        relatedTopics: ['المصادقة الثنائية', 'كلمات المرور', 'النسخ الاحتياطي'],
+      ),
+      // المصادقة الثنائية
+      KnowledgeEntry(
+        keywords: [
+          'مصادقة ثنائية',
+          '2fa',
+          'التحقق بخطوتين',
+          'تفعيل المصادقة الثنائية',
+          'كيف افعل المصادقة الثنائية',
+          'two factor authentication',
+          '2 step verification',
+          'المصادقة',
+          'توثيق',
+          'التحقق',
+        ],
+        answer: 'دليل تفعيل المصادقة الثنائية (2FA):\n'
+                'لحسابات جوجل:\n'
+                '1. اذهب إلى: إدارة حساب جوجل > الأمان\n'
+                '2. اختر "التحقق بخطوتين"\n'
+                '3. أضف رقم هاتف أو استخدم تطبيق مصادقة\n'
+                '4. احتفظ بمفاتيح الاسترداد\n'
+                'لحسابات فيسبوك:\n'
+                '1. الإعدادات > الأمان وتسجيل الدخول\n'
+                '2. "استخدام المصادقة الثنائية"\n'
+                '3. اختر طريقة التحقق (تطبيق، رسالة نصية)\n'
+                'نصائح احترافية:\n'
+                '• استخدم تطبيق مصادقة (Authy, Google Authenticator) بدلاً من الرسائل النصية (أكثر أماناً)\n'
+                '• احتفظ بمفاتيح الاسترداد في مكان مادي آمن (مثل: خزنة)\n'
+                '• فعّل 2FA على: البريد الإلكتروني، وسائل التواصل، البنوك، العملات الرقمية',
+        category: 'الحماية',
+        relatedTopics: ['حماية الحسابات', 'كلمات المرور', 'الأمان البنكي'],
+      ),
+      // التوعية والتعليم
+      KnowledgeEntry(
+        keywords: [
+          'توعية',
+          'تعليم الامن السيبراني',
+          'كيف اتعلم الامن السيبراني',
+          'مصادر تعلم',
+          'كورسات',
+          'شهادات امن سيبراني',
+          'التوعية الأمنية',
+          'تدريب',
+          'التعليم',
+          'تعلم',
+          'دورة',
+          'شهادة',
+        ],
+        answer: 'خريطة تعلم الأمن السيبراني:\n'
+                'المستوى المبتدئ:\n'
+                '• أساسيات الشبكات (CompTIA Network+)\n'
+                '• مفاهيم الأمن (Cybrary - دورات مجانية)\n'
+                '• قناة "الأمن السيبراني" على يوتيوب\n'
+                'المستوى المتوسط:\n'
+                '• شهادة CompTIA Security+\n'
+                '• منصة TryHackMe (تدريب عملي)\n'
+                '• كتاب "الاختراق الأخلاقي للمبتدئين"\n'
+                'المستوى المتقدم:\n'
+                '• شهادة OSCP (للمحترفين)\n'
+                '• منصة HackTheBox\n'
+                '• مؤتمرات مثل Black Hat, DEF CON\n'
+                'نصائح ذهبية:\n'
+                '• خصص 30 دقيقة يومياً للتعلم\n'
+                '• انضم لمجتمعات مثل: Saudi Cyber Community\n'
+                '• تدرب على منصات مثل: OverTheWire, VulnHub',
+        category: 'التعليم',
+        relatedTopics: ['شهادات', 'منصات تدريب', 'مجتمعات'],
+      ),
+      // التصيد الإلكتروني
+      KnowledgeEntry(
+        keywords: [
+          'تصيد',
+          'phishing',
+          'التصيد الاحتيالي',
+          'رسالة تصيد',
+          'كيف اتجنب التصيد',
+          'احتيال',
+          'scam',
+          'التصيد',
+          'احتيال إلكتروني',
+          'بريد احتيالي',
+          'vishing',
+          'smishing',
+        ],
+        answer: 'التصيد الإلكتروني: أنواعه وطرق الحماية\n'
+                'الأنواع الشائعة:\n'
+                '• بريدي: رسائل تطلب تحديث البيانات عبر رابط مزيف\n'
+                '• هاتفي (Vishing): مكالمات انتحال هوية دعم فني\n'
+                '• نصي (Smishing): رسائل نصية تحتوي روابط خبيثة\n'
+                '• شبكات اجتماعية: حسابات مزيفة تطلب مساعدة مالية\n'
+                'كيف تكتشف التصيد؟\n'
+                '• تحقق من عنوان المرسل (غالباً يحتوي أخطاء)\n'
+                '• مرر الماوس فوق الرابط لترى العنوان الحقيقي\n'
+                '• ابحث عن أخطاء إملائية أو لغوية\n'
+                '• تحقق من وجود "https://" ورمز القفل\n'
+                'إذا وقعت ضحية:\n'
+                '1. غير كلمات المرور فوراً\n'
+                '2. اتصل بالجهة الرسمية للتأكد\n'
+                '3. أبلغ عن الحادث للجهات المختصة',
+        category: 'الهندسة الاجتماعية',
+        relatedTopics: ['كيف يفكر الهاكر', 'حماية الحسابات', 'الاحتيال المالي'],
+      ),
+      // كلمات المرور
+      KnowledgeEntry(
+        keywords: [
+          'كلمة مرور',
+          'password',
+          'كلمة سر قوية',
+          'كيف انشئ كلمة مرور قوية',
+          'مدير كلمات مرور',
+          'passphrase',
+          'المرور',
+          'باسوورد',
+          'سر',
+        ],
+        answer: 'كلمة المرور القوية: دليل عملي\n'
+                'الطريقة الصحيحة (Passphrase):\n'
+                'اختر 4-5 كلمات عشوائية غير مرتبطة:\n'
+                'مثال: "شمس_بحر_جبل_قمر!2024"\n'
+                '• سهلة التذكر، صعبة الاختراق\n'
+                '• 20 حرفاً على الأقل\n'
+                'ما يجب تجنبه:\n'
+                '• كلمات قاموسية (password123)\n'
+                '• معلومات شخصية (اسم، تاريخ ميلاد)\n'
+                '• نفس كلمة المرور لعدة حسابات\n'
+                'أفضل الممارسات:\n'
+                '• استخدم مدير كلمات مرور (Bitwarden مجاني ومفتوح المصدر)\n'
+                '• فعّل المزامنة المشفرة عبر الأجهزة\n'
+                '• أنشئ كلمات مرور عشوائية للحسابات المهمة\n'
+                '• غيّر كلمات المرور كل 6 أشهر للحسابات الحرجة',
+        category: 'الحماية',
+        relatedTopics: ['المصادقة الثنائية', 'حماية الحسابات', 'مدير كلمات المرور'],
+      ),
+      // حماية الأطفال
+      KnowledgeEntry(
+        keywords: [
+          'طفل',
+          'أطفال',
+          'حماية الأطفال',
+          'رقابة أبوية',
+          'أطفال على الإنترنت',
+          'cyber safety for kids',
+          'الاطفال',
+          'أمان العائلة',
+          'أطفال رقميون',
+        ],
+        answer: 'حماية الأطفال في الفضاء الرقمي:\n'
+                'أدوات الرقابة:\n'
+                '• Google Family Link (للأجهزة أندرويد)\n'
+                '• Screen Time (لأجهزة آبل)\n'
+                '• تطبيقات مثل: Qustodio, Norton Family\n'
+                'القواعد الذهبية:\n'
+                '• ضع جهاز الكمبيوتر في مكان عام بالمنزل\n'
+                '• حدد أوقات استخدام الشاشة يومياً\n'
+                '• ناقش مع طفلك: "لا تشارك معلوماتك الشخصية مع أحد"\n'
+                '• علّمه التعرف على السلوك المشبوه\n'
+                '• تحقق من أصدقائه على وسائل التواصل\n'
+                'علامات الخطر:\n'
+                '• إخفاء الشاشة عند دخولك الغرفة\n'
+                '• تلقي هدايا أو أموال عبر الإنترنت\n'
+                '• تغير مفاجئ في السلوك أو المزاج',
+        category: 'الأمان العائلي',
+        relatedTopics: ['التوعية الأمنية', 'الهندسة الاجتماعية', 'التنمر الإلكتروني'],
+      ),
+      // النسخ الاحتياطي
+      KnowledgeEntry(
+        keywords: [
+          'نسخ احتياطي',
+          'backup',
+          'استعادة البيانات',
+          'كيف اعمل نسخ احتياطي',
+          'حماية البيانات',
+          'ransomware',
+          'النسخ',
+          'نسخة احتياطية',
+          'استعادة',
+          'حماية من الفدية',
+        ],
+        answer: 'النسخ الاحتياطي: درعك ضد الفدية والكوارث\n'
+                'قاعدة 3-2-1 الذهبية:\n'
+                '• 3 نسخ من بياناتك (الأصل + نسختان احتياطيتان)\n'
+                '• على وسيلتين مختلفتين (قرص صلب + سحابة)\n'
+                '• 1 نسخة خارج الموقع (للحماية من الحريق/السرقة)\n'
+                'الحلول المقترحة:\n'
+                '• سحابي: Backblaze, IDrive (تشفير من طرف لطرف)\n'
+                '• مادي: قرص صلب خارجي + تحديث أسبوعي\n'
+                '• هجين: استخدام Time Machine (لـ Mac) مع سحابة\n'
+                'نصائح حاسمة:\n'
+                '• اختبر استعادة الملفات شهرياً\n'
+                '• شغّل النسخ الاحتياطي التلقائي\n'
+                '• احتفظ بنسخة احتياطية مشفرة خارج المنزل\n'
+                '• ركّز على الملفات المهمة (مستندات، صور، مشاريع)',
+        category: 'الحماية',
+        relatedTopics: ['الحماية من الفدية', 'استعادة الكوارث', 'التشفير'],
+      ),
+      // أمن الشبكات
+      KnowledgeEntry(
+        keywords: [
+          'واي فاي',
+          'wifi',
+          'أمن الشبكة',
+          'راوتر',
+          'حماية الواي فاي',
+          'شبكة منزلية',
+          'الشبكة',
+          'راوتر آمن',
+          'تشفير الواي فاي',
+          'wpa3',
+        ],
+        answer: 'تأمين شبكة الواي فاي المنزلية:\n'
+                'خطوات أساسية:\n'
+                '1. غيّر اسم الشبكة وكلمة المرور الافتراضية\n'
+                '2. استخدم تشفير WPA3 (أو WPA2 إذا غير متوفر)\n'
+                '3. أخفِ اسم الشبكة (Disable SSID Broadcast)\n'
+                '4. حدّث برنامج الراوتر (Firmware) شهرياً\n'
+                '5. أنشئ شبكة ضيوف منفصلة للأجهزة غير الموثوقة\n'
+                'نصائح متقدمة:\n'
+                '• عطّل خاصية WPS (ثغرة أمنية شائعة)\n'
+                '• فعّل جدار الحماية (Firewall) في الراوتر\n'
+                '• راقب الأجهزة المتصلة عبر لوحة التحكم\n'
+                '• استخدم قناة غير مزدحمة (1, 6, 11) لتقليل التداخل',
+        category: 'الشبكات',
+        relatedTopics: ['الحماية من الاختراق', 'الراوتر الآمن', 'الواي فاي العام'],
+      ),
+      // التحديثات الأمنية
+      KnowledgeEntry(
+        keywords: [
+          'تحديثات',
+          'تحديث أمن',
+          'patches',
+          'لماذا التحديثات مهمة',
+          'تحديث النظام',
+          'التحديث',
+          'تحديث تلقائي',
+          'أمان النظام',
+        ],
+        answer: 'التحديثات الأمنية: درعك الأول\n'
+                'لماذا هي حاسمة؟\n'
+                '• 60% من الهجمات تستغل ثغرات تم إصلاحها بتحديثات سابقة!\n'
+                '• التحديثات تغلق الثغرات التي يكتشفها الباحثون الأمنيون\n'
+                '• تمنع الهجمات التلقائية التي تستهدف الأنظمة غير المحدثة\n'
+                'أفضل الممارسات:\n'
+                '• فعّل التحديثات التلقائية لأنظمة التشغيل\n'
+                '• حدّث التطبيقات فور توفر التحديثات\n'
+                '• لا تؤجل التحديثات "الحرجة" (Critical Updates)\n'
+                '• تأكد من تحديث أجهزة IoT (كاميرات، أجهزة ذكية)\n'
+                '• استخدم أدوات مثل: Patch My PC (لويندوز)',
+        category: 'الحماية',
+        relatedTopics: ['الثغرات الأمنية', 'حماية النظام', 'أمن التطبيقات'],
+      ),
+    ];
+    // توليد الاقتراحات الديناميكية
+    _updateSuggestions();
+  }
+  
+  // تحديث الاقتراحات بناءً على الفئة الحالية
+  void _updateSuggestions() {
+    if (_currentCategory == null) {
+      _suggestions = [
+        'ما هو الأمن السيبراني؟',
+        'ما هي الثغرات الأمنية؟',
+        'كيف يفكر الهاكر؟',
+        'كيف أحمي نفسي؟',
+        'كيف أفعل المصادقة الثنائية؟',
+        'ما هو التصيد الإلكتروني؟',
+        'كيف أنشئ كلمة مرور قوية؟',
+        'كيف أحمي طفلي على الإنترنت؟',
+      ];
+    } else {
+      final related = _knowledgeBase
+          .where((e) => e.category == _currentCategory)
+          .expand<String>((e) => e.relatedTopics ?? <String>[])
+          .toSet()
+          .take(5)
+          .toList();
+      _suggestions = related.isNotEmpty
+          ? List<String>.from(related)
+          : ['اسأل عن: أساسيات الأمن', 'حماية الحسابات', 'الهندسة الاجتماعية', 'التعليم الأمني'];
+    }
+  }
+  
+  // محرك بحث متطور في قاعدة المعرفة - الإصلاح الرئيسي هنا
+  String _findAnswer(String question) {
+    String lowerQ = question.toLowerCase().trim();
+    // تنظيف النص مع الحفاظ على المسافات الطبيعية ودعم الحروف العربية
+    String normalizedQ = lowerQ.replaceAll(RegExp(r'[^\p{L}\p{N}\s]', unicode: true), ' ');
+    normalizedQ = normalizedQ.replaceAll(RegExp(r'\s+'), ' ').trim();
+    
+    // معالجة المرادفات بشكل صحيح (استبدال المرادفات بالمصطلح القياسي)
+    final synonyms = {
+      'هاكر': ['هكر', 'مخترق', 'قرصان', 'هكرز', 'الهاكر', 'الهكر', 'القراصنة'],
+      'حماية': ['أمان', 'تأمين', 'وقاية', 'الحماية', 'احمي', 'يحمي', 'الامان'],
+      'ثغرة': ['خلل', 'ضعف', 'الثغرات', 'ثغرات', 'نقاط ضعف', 'خلل أمني'],
+      'امن': ['أمن', 'الامن', 'الامن السيبراني', 'الامن السراني', 'الامن الرقمي'],
+      'تصيد': ['احتيال', 'scam', 'التصيد', 'رسالة تصيد', 'احتيال إلكتروني', 'بريد احتيالي'],
+      'كلمة مرور': ['باسوورد', 'سر', 'المرور', 'password'],
+      'مصادقة': ['توثيق', 'التحقق', '2fa', '2 step'],
+      'نسخ احتياطي': ['نسخة احتياطية', 'النسخ', 'backup', 'استعادة'],
+    };
+    
+    // استبدال المرادفات بالمصطلح القياسي (باستخدام حدود الكلمات لتجنب الاستبدال الجزئي)
+    for (var entry in synonyms.entries) {
+      for (var synonym in entry.value) {
+        if (synonym.isEmpty) continue;
+        // استخدام تعبير نمطي لاستبدال الكلمة الكاملة فقط
+        normalizedQ = normalizedQ.replaceAll(
+          RegExp(r'\b' + synonym.escape() + r'\b', unicode: true),
+          entry.key,
+        );
+      }
+    }
+    
+    KnowledgeEntry? bestMatch;
+    int bestScore = 0;
+    String bestKeyword = '';
+    for (var entry in _knowledgeBase) {
+      int score = 0;
+      String matchedKeyword = '';
+      
+      // ترتيب الكلمات المفتاحية من الأطول إلى الأقصر لتحسين الأولوية
+      var sortedKeywords = entry.keywords
+          .map((k) => k.toLowerCase().replaceAll(RegExp(r'[^\p{L}\p{N}\s]', unicode: true), ' '))
+          .map((k) => k.replaceAll(RegExp(r'\s+'), ' ').trim())
+          .where((k) => k.isNotEmpty)
+          .toList()
+        ..sort((a, b) => b.length.compareTo(a.length));
+      
+      // تقييم كل كلمة مفتاحية
+      for (var keyword in sortedKeywords) {
+        if (keyword.isEmpty) continue;
+        
+        // 1. تطابق تام (الأولوية الأعلى) - يفوز تلقائيًا
+        if (normalizedQ == keyword) {
+          score = 200;
+          matchedKeyword = keyword;
+          break;
+        }
+        
+        // 2. تطابق مع حدود الكلمة (لمنع التطابق داخل كلمات أخرى)
+        else if (normalizedQ.contains(' $keyword ') ||
+            normalizedQ.startsWith('$keyword ') ||
+            normalizedQ.endsWith(' $keyword')) {
+          int matchScore = 120;
+          // مكافأة إضافية للعبارات الطويلة (> 8 أحرف)
+          if (keyword.length > 8) matchScore += 30;
+          if (matchScore > score) {
+            score = matchScore;
+            matchedKeyword = keyword;
+          }
+        }
+        
+        // 3. تطابق جزئي (بحذر - فقط للكلمات المتوسطة/الطويلة)
+        else if (keyword.length >= 6 && normalizedQ.contains(keyword)) {
+          int matchScore = 60;
+          if (keyword.length > 10) matchScore += 20;
+          if (matchScore > score) {
+            score = matchScore;
+            matchedKeyword = keyword;
+          }
+        }
+      }
+      
+      // تحديث أفضل تطابق
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = entry;
+        bestKeyword = matchedKeyword;
+        _currentCategory = entry.category;
+      }
+    }
+    
+    // تحديث الاقتراحات المرتبطة
+    _updateSuggestions();
+    
+    // شرط صارم لضمان جودة الإجابة (الحد الأدنى 100 نقطة)
+    if (bestMatch != null && bestScore >= 100) {
+      // إضافة سياق إضافي عند التطابق الجزئي
+      if (bestScore < 150 && bestKeyword.isNotEmpty) {
+        return 'بناءً على سؤالك عن "$bestKeyword"، إليك الإجابة:\n${bestMatch.answer}';
+      }
+      return bestMatch.answer;
+    }
+    
+    // رسالة مساعدة ذكية عند عدم وجود تطابق جيد
+    return _generateSmartSuggestions(normalizedQ);
+  }
+  
+  // دالة مساعدة لتوليد اقتراحات ذكية عند عدم العثور على إجابة
+  String _generateSmartSuggestions(String normalizedQ) {
+    // اكتشاف الموضوعات المحتملة من السؤال
+    List<String> topics = [];
+    if (normalizedQ.contains('كلمة مرور') || normalizedQ.contains('باسوورد') || normalizedQ.contains('سر')) {
+      topics.add('كيف أنشئ كلمة مرور قوية؟');
+    }
+    if (normalizedQ.contains('مصادقة') || normalizedQ.contains('2fa') || normalizedQ.contains('توثيق') || normalizedQ.contains('تحقق')) {
+      topics.add('كيف أفعل المصادقة الثنائية؟');
+    }
+    if (normalizedQ.contains('تصيد') || normalizedQ.contains('احتيال') || normalizedQ.contains('رسال') || normalizedQ.contains('scam')) {
+      topics.add('ما هو التصيد الإلكتروني؟');
+    }
+    if (normalizedQ.contains('طفل') || normalizedQ.contains('اطفال') || normalizedQ.contains('عائلي') || normalizedQ.contains('عائلة')) {
+      topics.add('كيف أحمي طفلي على الإنترنت؟');
+    }
+    if (normalizedQ.contains('راوتر') || normalizedQ.contains('واي فاي') || normalizedQ.contains('شبكة') || normalizedQ.contains('wifi')) {
+      topics.add('كيف أحمي شبكة الواي فاي المنزلية؟');
+    }
+    if (normalizedQ.contains('تحديث') || normalizedQ.contains('patches') || normalizedQ.contains('ترقيع')) {
+      topics.add('لماذا التحديثات الأمنية مهمة؟');
+    }
+    if (normalizedQ.contains('نسخ') || normalizedQ.contains('backup') || normalizedQ.contains('استعادة')) {
+      topics.add('كيف أعمل نسخ احتياطي آمن؟');
+    }
+    
+    // بناء الرسالة حسب الموضوعات المكتشفة
+    if (topics.isNotEmpty) {
+      String suggestions = topics.map((t) => '• $t').join('\n');
+      return 'لم أفهم سؤالك تمامًا، لكن قد تفيدك هذه الاقتراحات:\n$suggestions\nأو جرب صياغة سؤالك كـ: "ما هو الأمن السيبراني؟"';
+    }
+    
+    // اقتراحات عامة
+    return 'عذراً، لم أجد إجابة دقيقة لسؤالك. جرب أحد هذه الأسئلة الشائعة:\n'
+        '\n'
+        'للمبتدئين:\n'
+        '• ما هو الأمن السيبراني؟\n'
+        '• ما هي الثغرات الأمنية؟\n'
+        '\n'
+        'لحماية حساباتك:\n'
+        '• كيف أفعل المصادقة الثنائية؟\n'
+        '• كيف أنشئ كلمة مرور قوية؟\n'
+        '\n'
+        'لتفادي الاحتيال:\n'
+        '• ما هو التصيد الإلكتروني؟\n'
+        '• كيف يفكر الهاكر؟\n'
+        '\n'
+        'نصيحة: كن دقيقًا في سؤالك مثل: "كيف أحمي نفسي من التصيد؟"';
+  }
+  
+  void _sendMessage() {
+    String question = _controller.text.trim();
+    if (question.isEmpty) return;
+    
+    setState(() {
+      _messages.add({'sender': 'user', 'text': question});
+      _controller.clear();
+      _isThinking = true;
+    });
+    
+    _scrollToBottom();
+    
+    // تحسين تجربة المستخدم: وقت تفكير ديناميكي
+    int delay = (question.length * 15).clamp(400, 1200) as int;
+    Future.delayed(Duration(milliseconds: delay), () {
+      if (!mounted) return;
+      String answer = _findAnswer(question);
+      setState(() {
+        _messages.add({'sender': 'ai', 'text': answer});
+        _isThinking = false;
+      });
+      _scrollToBottom();
+    });
+  }
+  
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent + 120,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    _initKnowledgeBase();
+  }
+  
   @override
   void dispose() {
     _controller.dispose();
     _scrollController.dispose();
     super.dispose();
   }
-}
-
-// --- فئة قاعدة المعرفة المتقدمة ---
-class CyberKnowledgeBase {
-  final Map<String, List<String>> _keywords = {
-    'حساب': ['حساب', 'اكونت', 'login', 'account', 'تسجيل دخول', 'حسابي', 'حسابك'],
-    'كلمة المرور': ['كلمة المرور', 'باسوورد', 'password', 'pass', 'سر', 'رمز السر'],
-    'هكر': ['هكر', 'اختراق', 'هاكر', 'hacker', 'hack', 'crack', 'مخترق', 'اختُرقت'],
-    'حماية': ['حماية', 'أمن', 'security', 'safe', 'secure', 'أمان', 'تحمي'],
-    'فيروس': ['فيروس', 'malware', 'virus', 'برمجيات خبيثة', 'برنامج ضار', 'برمجية خبيثة'],
-    'تصيد': ['تصيد', 'phishing', 'خداع', 'احتيال', 'نصب', 'رسالة مزيفة', 'رابط مزيف'],
-    'شبكة': ['شبكة', 'network', 'واي فاي', 'wifi', 'راوتر', 'firewall', 'نت'],
-    'نظام': ['نظام', 'system', 'windows', 'mac', 'لينكس', 'linux', 'تحديث', 'تحديثات'],
-    'طفل': ['طفل', 'أطفال', 'ابني', 'ابنتي', 'child', 'kids', 'parental', 'طفلي', 'أطفالك'],
-    'دفع': ['دفع', 'شراء', 'بطاقة', 'credit', 'payment', 'shopping', 'تسوق', 'دفع إلكتروني'],
-    'خصوصية': ['خصوصية', 'privacy', 'private', 'إعدادات', 'settings', 'إعدادات الخصوصية'],
-    'ابتزاز': ['ابتزاز', 'blackmail', 'تهديد', 'تهديدي', 'صور', 'فيديوهات', 'ابتزاز إلكتروني'],
-    'هندسة اجتماعية': ['هندسة اجتماعية', 'social engineering', 'خداع نفسي', 'نصب', 'خداع'],
-    'vpn': ['vpn', 'شبكة خاصة', 'مجهول', 'anonymous', 'بروكسي', 'في بي إن'],
-    'مصادقة ثنائية': ['مصادقة ثنائية', '2fa', 'two factor', 'تحقق بخطوتين', 'رمز التحقق'],
-    'جهاز': ['جهاز', 'كمبيوتر', 'موبايل', 'هاتف', 'device', 'phone', 'laptop', 'تابلت'],
-    'واتساب': ['واتساب', 'whatsapp', 'تلغرام', 'telegram', 'سناب', 'snapchat', 'انستا', 'فيسبوك'],
-    'سحابة': ['سحابة', 'cloud', 'aws', 'azure', 'icloud', 'onedrive', 'dropbox', 'googledrive'],
-    'ذكاء اصطناعي': ['ذكاء اصطناعي', 'ai', 'machine learning', 'deep learning', 'chatgpt', 'ai security', 'بوت'],
-    'نسخ احتياطي': ['نسخ احتياطي', 'backup', 'استرجاع', 'استعادة', 'data backup', 'نسخة احتياطية', 'حفظ البيانات'],
-    // ✅ إضافات جديدة:
-    'بلوك تشين': ['بلوك تشين', 'blockchain', 'سلسلة الكتل', 'بيتكوين', 'عملات رقمية'],
-    'هكر أخلاقي': ['هكر أخلاقي', 'ethical hacking', 'اختبار اختراق', 'pentest'],
-    'كاميرا': ['كاميرا', 'كاميرا ويب', 'webcam', 'كاميرا الموبايل', 'كاميرا اللاب'],
-    'سماعة': ['سماعة', 'ميكروفون', 'mic', 'مايك', 'مايكروفون'],
-    'فيسبوك': ['فيسبوك', 'facebook', 'فيس', 'فيس بوك'],
-    'انستقرام': ['انستقرام', 'instagram', 'انستا', 'انستجرام'],
-    'تويتر': ['تويتر', 'twitter', 'إكس', 'x'],
-    'يوتيوب': ['يوتيوب', 'youtube', 'يوتيوب كيدز'],
-  };
-
-  String getWelcomeMessage() {
-    return '🌟 أهلاً بك مع **سيبرو**، صديقك الذكي في عالم الأمن الرقمي! 🤖\n'
-        'أنا هنا علشان أساعدك تحمي نفسك وأهلك من أي خطر إلكتروني.\n'
-        'اسألني أي سؤال — حتى لو كان يبدو بسيطًا — وأنا أجاوبك بأسلوب سهل وعملي!';
-  }
-
-  String getReply(String query) {
-    query = query.toLowerCase().trim();
-
-    // ✅ إذا المستخدم قال "مرحبا" أو "هلا"
-    if (query.contains('مرحبا') || query.contains('هلا') || query.contains('اهلا') || query.contains('hello')) {
-      return _formatResponse(
-        '👋 أهلاً وسهلاً يا صديقي!',
-        [
-          'أنا **سيبرو**، مساعدك الشخصي في الأمن السيبراني 🤖🛡️',
-          'مستعد أساعدك في أي شيء: من حماية حسابك، لحماية طفلك، لتجنب النصب الإلكتروني.',
-          '💡 جرب تسألني: "كيف أحمي بريدي؟" أو "شو أعمل إذا ابتزوني؟"',
-          'أنا هنا 24/7، وما بخليك تواجه الخطر لوحدك ❤️',
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Row(
+          children: [
+            Icon(Icons.shield, color: Colors.white),
+            SizedBox(width: 8),
+            Text('درع - مساعد الأمن السيبراني'),
+          ],
+        ),
+        backgroundColor: const Color(0xFF0D1B2A),
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.menu_book, color: Colors.white),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('سيتم إضافة مكتبة الموارد قريباً!')),
+              );
+            },
+          ),
         ],
-      );
-    }
-
-    // ✅ إذا المستخدم شكر
-    if (query.contains('شكرا') || query.contains('thank') || query.contains('ممتاز') || query.contains('رائع')) {
-      return _formatResponse(
-        '🥰 يسعدني مساعدتك!',
-        [
-          'هذا واجبي — وأنا فخور إني أساعدك تحمي نفسك وأهلك.',
-          'لو عندك أي سؤال ثاني، ما تتردد تسألني.',
-          'شارك التطبيق مع أصحابك — كلنا نستحق نعيش بأمان رقمي 🌍🔐',
-        ],
-      );
-    }
-
-    // ✅ الحسابات وكلمات المرور
-    if (_matches(query, ['حساب', 'كلمة المرور', 'باسوورد'])) {
-      return _formatResponse(
-        '🔐 يا صديقي، حسابك هو قصرك الرقمي — خليه محصن! 🏰',
-        [
-          '🔑 **كلمة المرور القوية**: استخدم 12 حرفًا فأكثر — مزيج من حروف كبيرة، صغيرة، أرقام، ورموز. مثال: `MyP@ssw0rd!2025`',
-          '📱 **المصادقة الثنائية (2FA)**: إلزامية! استخدم تطبيق زي Google Authenticator — أحسن من الرسائل النصية.',
-          '🧠 **مدير كلمات المرور**: استخدم Bitwarden (مجاني) — بيحفظلك كل كلمات السر وبيولدها قوية.',
-          '🚫 **تحذير ذهبي**: لا تستخدم نفس كلمة المرور لأكثر من حساب — لو تسرب واحد، بيكون كلهم في خطر!',
-          '⏰ **نصيحة مجانية**: غير كلمات السر كل 6 شهور — خاصة للبريد والبنك.',
-        ],
-      );
-    }
-
-    // ✅ الهكر والاختراق
-    if (_matches(query, ['هكر', 'اختراق', 'هاكر'])) {
-      return _formatResponse(
-        '🛡️ لا تخف — مع سيبرو، أنت بأمان! 🤖',
-        [
-          '🔄 **حدّث جهازك**: أهم خطوة! التحديثات بتصلح ثغرات يقدر يستغلها الهاكر.',
-          '🧱 **فعّل جدار الحماية (Firewall)**: موجود في إعدادات جهازك — شغّله وخلّيه يشتغل دائمًا.',
-          '🦠 **برنامج مكافحة فيروسات**: استخدم Bitdefender أو Kaspersky — مجانيين وفعّالين.',
-          '📧 **لا تفتح مرفقات مشبوهة**: حتى لو من "صديق" — ممكن يكون جهازه مخترق!',
-          '🚨 **إشارات الاختراق**: بطء في الجهاز، نوافذ منبثقة، أو نشاط غريب في الحسابات — روح للطبيب الرقمي فورًا!',
-        ],
-      );
-    }
-
-    // ✅ التصيد وهندسة اجتماعية
-    if (_matches(query, ['تصيد', 'هندسة اجتماعية', 'خداع', 'احتيال'])) {
-      return _formatResponse(
-        '🎣 انتبه! العالم الرقمي مليان صيادين — بس مع سيبرو، مش هتصطادك! 😉',
-        [
-          '📧 **التصيد (Phishing)**: محاولات انتحال هوية بنوك أو شركات عشان يسرقوا بياناتك — دائمًا تحقق من الرابط والمرسل.',
-          '🛑 **قاعدة ذهبية**: لا تنقر على أي رابط في إيميل أو رسالة — حتى لو بدا رسمي. اكتب الرابط يدويًا في المتصفح.',
-          '🎭 **هندسة اجتماعية**: شخص يتصل فيك ويقول إنه من الدعم الفني ويطلب صلاحيات — ده خدعة! ما تعطيه أي صلاحيات.',
-          '😂 **مثال طريف**: "فزت بسيارة!" — لو كنت فزت، كنت عارف من غير ما يرسلوا لك! 😄',
-          '🛡️ **نصيحة سيبرو**: شكّك في كل حاجة — الشك ده حمايتك!',
-        ],
-      );
-    }
-
-    // ✅ حماية الأطفال
-    if (_matches(query, ['طفل', 'أطفال', 'parental'])) {
-      return _formatResponse(
-        '👨‍👩‍👧‍👦 حماية طفلك على الإنترنت أهم من أي لعبة أو فيلم! 💖',
-        [
-          '⏱️ **حدد وقت الشاشة**: استخدم Google Family Link أو Screen Time — علشان ما يضيع وقته.',
-          '🚫 **عطّل الدردشة في الألعاب**: كتير من الألعاب فيها دردشة — خليك حذر وعطّلها.',
-          '📺 **استخدم YouTube Kids**: مخصص للأطفال — وبيحميهم من المحتوى غير المناسب.',
-          '💬 **علّمه**: "ما تكلم غريب، وما تشارك صورك، وإذا حسيت بخوف، قول لأبوك أو أمك فورًا".',
-          '🔄 **حدّث أجهزته**: التحديثات بتصلح ثغرات — خليك دايماً محدث.',
-        ],
-      );
-    }
-
-    // ✅ الدفع والتسوق الآمن
-    if (_matches(query, ['دفع', 'شراء', 'بطاقة', 'credit'])) {
-      return _formatResponse(
-        '💳 التسوق الإلكتروني ممتع — بس لازم يكون آمن! 🛍️',
-        [
-          '📶 **لا تستخدم الواي فاي العام للدفع**: استخدم بيانات الجوال (4G/5G) — أأمن بكتير.',
-          '🛒 **استخدم PayPal أو Apple Pay**: ما يخليك تدخل بيانات بطاقتك مباشرة — بيحمي بياناتك.',
-          '💳 **بطاقة افتراضية**: اطلبها من البنك — برصيد محدود، حتى لو سُرقت، الخسارة مش كبيرة.',
-          '🔒 **تأكد من القفل**: شوف رمز القفل 🔒 في شريط الرابط — ده معناه أن الموقع آمن.',
-          '🔔 **فعّل الإشعارات**: علشان تعرف بأي عملية شراء فورًا — لو ما عملتهاش، تقدر تبلغ البنك.',
-        ],
-      );
-    }
-
-    // ✅ الخصوصية
-    if (_matches(query, ['خصوصية', 'واتساب', 'privacy', 'settings'])) {
-      return _formatResponse(
-        '🙈 خصوصيتك حقك — ما تفرّط فيها! 🛡️',
-        [
-          '📵 **واتساب**: روح لإعدادات > الحساب > الخصوصية — غير "آخر ظهور" و"صورة الملف" لـ "جهات الاتصال فقط".',
-          '👥 **فيسبوك/إنستغرام**: خلي حسابك خاص — وما تشارك معلوماتك الشخصية (عنوان، رقم هاتف، تاريخ ميلاد).',
-          '🌐 **جوجل**: روح لـ myaccount.google.com — وأوقف تتبع الموقع والنشاط إذا ما كنتش محتاجه.',
-          '🔐 **المصادقة الثنائية**: فعّلها على كل حساباتك — دي خط دفاعك الثاني لو حد عرف كلمة سرك.',
-          '🤖 **نصيحة سيبرو**: خصوصيتك مش رفاهية — دي حقك، وواجبك تحميها.',
-        ],
-      );
-    }
-
-    // ✅ الـ VPN
-    if (_matches(query, ['vpn', 'شبكة', 'واي فاي', 'network'])) {
-      return _formatResponse(
-        '🌐 الـ VPN صديقك على الواي فاي العام — بس اختاره بحكمة! 🤫',
-        [
-          '🔐 **وظيفته**: بيشفر اتصالك ويخبي عنوان IP — ماحدش يقدر يراقبك.',
-          '⚠️ **تجنب المجاني**: كتير من الـ VPN المجاني بيبع بياناتك — استخدم NordVPN أو ExpressVPN.',
-          '🧱 **جدار الحماية**: فعّله في جهازك — بيحميك من أي محاولة اختراق عبر الشبكة.',
-          '📡 **راوتر آمن**: غير كلمة السر الافتراضية — وفعّل التشفير WPA3.',
-          '🚫 **تحذير**: لا تستخدم واي فاي مفتوح (بدون باسورد) للدخول على حساباتك أو الدفع — خطر جدًا!',
-        ],
-      );
-    }
-
-    // ✅ الابتزاز الإلكتروني
-    if (_matches(query, ['ابتزاز', 'blackmail', 'تهديد'])) {
-      return _formatResponse(
-        '🚨 لو تعرضت لابتزاز — متستسلمش! أنا معاك 🤝',
-        [
-          '🛑 **لا تدفع أبدًا**: الدفع ما بيوقفش المبتز — بيطلب أكثر!',
-          '📸 **احفظ الأدلة**: خذ سكرين شوت للرسائل والروابط — دي هتساعدك لما تبلغ.',
-          '📞 **أبلغ فورًا**: روح لأقرب مركز شرطة أو راسل هيئة الجرائم الإلكترونية في بلدك.',
-          '🔐 **غيّر كلمات السر**: غير كل كلمات السر فورًا — خاصة للحسابات المهمة.',
-          '❤️ **دعم نفسي**: ما تحسش بالخجل — أنت الضحية. كلم أصدقاءك أو متخصص — ما تواجه الموضوع لوحدك.',
-        ],
-      );
-    }
-
-    // ✅ التخزين السحابي
-    if (_matches(query, ['سحابة', 'cloud', 'aws', 'azure'])) {
-      return _formatResponse(
-        '☁️ السحابة مريحة — بس لازم تحميها زي بيتك! 🏠',
-        [
-          '🔐 **كلمة مرور قوية + 2FA**: دي أساس الحماية — ما تهملهاش.',
-          '🔒 **فعّل التشفير**: في Google Drive أو iCloud — شغّل "Encryption at Rest".',
-          '📱 **راجع الأجهزة المرتبطة**: في إعدادات حسابك — افصل أي جهاز ما تعرفوش.',
-          '📂 **ما تخزنش ملفات حساسة بدون تشفير**: جوازات، فواتير، صور خاصة — استخدم Cryptomator.',
-          '💾 **استراتيجية 3-2-1**: 3 نسخ، على وسائط مختلفة (سحابة + هارد خارجي)، واحدة خارج المنزل.',
-        ],
-      );
-    }
-
-    // ✅ الذكاء الاصطناعي
-    if (_matches(query, ['ذكاء اصطناعي', 'ai', 'machine learning'])) {
-      return _formatResponse(
-        '🤖 الذكاء الاصطناعي سلاح ذو حدين — نستخدمه بحكمة! ⚔️',
-        [
-          '🛡️ **بيساعد في الأمن**: بيكتشف هجمات وتصيد بسرعة — أحسن من البشر أحيانًا!',
-          '🎣 **بيستخدم في الهجمات**: بيولد إيميلات ورسائل تصيد واقعية جدًا — خليك حذر!',
-          '🎭 **احذر من الـ Deepfake**: صور وفيديوهات مزيفة — ممكن تستخدم للابتزاز أو التضليل.',
-          '💡 **نصيحة سيبرو**: الـ AI أداة — مش بديل للإنسان. استخدمه بذكاء، وما تثق في كل حاجة يصنعها.',
-          '⚠️ **خليك حذر من التطبيقات**: اللي بتطلب صلاحيات غريبة باسم "ذكاء اصطناعي" — ممكن تكون خطرة!',
-        ],
-      );
-    }
-
-    // ✅ النسخ الاحتياطي
-    if (_matches(query, ['نسخ احتياطي', 'backup', 'استرجاع'])) {
-      return _formatResponse(
-        '💾 النسخ الاحتياطي هو مظلة أمانك — خليك دايماً مستعد! ☔',
-        [
-          '📅 **انسخ بانتظام**: كل أسبوع للملفات العادية — وكل يوم للملفات المهمة (شغل، دراسة).',
-          '🔢 **استخدم قاعدة 3-2-1**: 3 نسخ، على وسائط مختلفة (كمبيوتر + هارد خارجي + سحابة)، واحدة خارج المنزل.',
-          '🔐 **تشفير النسخ**: لما تنزل على السحابة — استخدم Cryptomator أو Boxcryptor.',
-          '🧪 **اختبر الاسترجاع**: كل 3 شهور — جرب ترجع ملف من النسخة — تأكد إنها شغالة.',
-          '📌 **مثال عملي**: ملفاتك على اللاب + نسخة على هارد خارجي + نسخة مشفرة على Google Drive.',
-        ],
-      );
-    }
-
-    // ✅ الهكر الأخلاقي
-    if (_matches(query, ['هكر أخلاقي', 'ethical hacking'])) {
-      return _formatResponse(
-        '🦸‍♂️ الهكر الأخلاقي — البطل اللي بيدافع عنك! 🦸‍♀️',
-        [
-          '🔍 **وظيفته**: بيدور على ثغرات في الأنظمة قبل ما الهاكر الحقيقي يلاقيها — وبيصلحها!',
-          '🎓 **عايز تتعلمه؟**: ابدأ بأساسيات الشبكات والأمن — بعد كده دور على شهادات زي CEH أو OSCP.',
-          '💻 **أدواته**: Kali Linux, Metasploit, Burp Suite — أدوات احترافية بس للدفاع فقط!',
-          '⚖️ **مهم جدًا**: الهكر الأخلاقي شرعي بس بإذن — من غير إذن، ده جريمة!',
-          '💡 **نصيحة سيبرو**: لو عايز تبدأ، جرب مواقع زي Hack The Box أو TryHackMe — بتعلم بطريقة عملية.',
-        ],
-      );
-    }
-
-    // ✅ البلوك تشين والعملات الرقمية
-    if (_matches(query, ['بلوك تشين', 'blockchain', 'عملات رقمية'])) {
-      return _formatResponse(
-        '⛓️ البلوك تشين تقنية ثورية — بس لازم تتعامل معاها بحذر! 💰',
-        [
-          '🔐 **الأمان في يدك**: محفظتك الرقمية — كلمة السر بتاعتها لو ضاعت، ضاعت فلوسك للأبد!',
-          '⚠️ **احذر من النصب**: كتير من المواقع والعملات وهمية — تحقق من المصدر قبل ما تستثمر.',
-          '🌐 **البلوك تشين مش مجهول 100%**: المعاملات عامة — بس ممكن تربطها بيك لو ما احتراستش.',
-          '💾 **احفظ مفتاحك الخاص (Private Key)**: في مكان آمن — لو حد شافه، يقدر يسرق كل حاجة!',
-          '💡 **نصيحة سيبرو**: لا تستثمر فلوسك كلها — خليك دايماً محتاط، واللي ما تفهموش، ما تدخلش فيه.',
-        ],
-      );
-    }
-
-    // ✅ الكاميرا والميكروفون
-    if (_matches(query, ['كاميرا', 'سماعة', 'mic', 'ميكروفون'])) {
-      return _formatResponse(
-        '📹 الكاميرا والميكروفون — نعمة ممكن تتحول لكابوس! 😱',
-        [
-          '🛡️ **غطّي الكاميرا**: لاصق صغير على الكاميرا — أبسط وأأمن حل!',
-          '🔇 **عطّل الميكروفون**: لما ما تستخدموش — في إعدادات الجهاز أو ببرنامج زي OBS.',
-          '📱 **راجع الصلاحيات**: في إعدادات الجوال أو اللاب — شوف مين عنده صلاحية الوصول للكاميرا والميك.',
-          '🚨 **تحذير**: كتير من البرمجيات الخبيثة بتدخل على الكاميرا والميك — خليك دايماً محدث ومحمي.',
-          '💡 **نصيحة سيبرو**: لما تخلص من مكالمة أو مؤتمر — تأكد إنك قفلت الكاميرا والميك!',
-        ],
-      );
-    }
-
-    // ✅ الرد الافتراضي الذكي
-    return _formatResponse(
-      '🤔 ما فهمتش سؤالك بالظبط — بس ما تيأسش! 🤗',
-      [
-        '💡 جرب تصيغ السؤال بطريقة تانية، أو اسأل عن:',
-        '• كيف أحمي حسابي من الاختراق؟',
-        '• ما هو الـ Phishing؟',
-        '• كيف أعرف أن جهازي به فيروس؟',
-        '• هل الـ VPN آمن؟',
-        '• كيف أحمي طفلي على الإنترنت؟',
-        '• شو أعمل إذا تعرضت لابتزاز؟',
-        '• كيف أعمل نسخة احتياطية لملفاتي؟',
-        '• هل الذكاء الاصطناعي خطير؟',
-        '\nأنا هنا دائمًا علشان أساعدك — لا تتردد تسألني أي سؤال! 🤖❤️',
-      ],
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0D1B2A), Color(0xFF1B263B)],
+          ),
+        ),
+        child: Column(
+          children: [
+            // شريط الفئة الحالية
+            if (_currentCategory != null)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                color: Colors.black.withOpacity(0.3),
+                child: Row(
+                  children: [
+                    Icon(
+                      _getCategoryIcon(_currentCategory!),
+                      color: _getCategoryColor(_currentCategory!),
+                      size: 18,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '$_currentCategory | نصائح متعلقة',
+                      style: TextStyle(
+                        color: _getCategoryColor(_currentCategory!),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: _messages.isEmpty
+                    ? _buildWelcomeScreen()
+                    : ListView.builder(
+                        controller: _scrollController,
+                        itemCount: _messages.length,
+                        itemBuilder: (context, index) {
+                          final msg = _messages[index];
+                          return _buildMessageBubble(msg['text']!, msg['sender']!);
+                        },
+                      ),
+              ),
+            ),
+            if (_isThinking)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4ECDC4)),
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Text(
+                        'درع يبحث عن أفضل إجابة...',
+                        style: TextStyle(color: Colors.white70, fontSize: 15),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            _buildSuggestionChips(),
+            _buildInputField(),
+          ],
+        ),
+      ),
     );
   }
-
-  bool _matches(String query, List<String> keywords) {
-    for (String keyword in keywords) {
-      if (_keywords[keyword] != null) {
-        for (String synonym in _keywords[keyword]!) {
-          if (query.contains(synonym)) {
-            return true;
-          }
-        }
-      } else {
-        if (query.contains(keyword)) {
-          return true;
-        }
-      }
-    }
-    return false;
+  
+  Widget _buildWelcomeScreen() {
+    return Center(
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF1E3A5F), Color(0xFF0F1B33)],
+                ),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: const Color(0xFF4ECDC4).withOpacity(0.6),
+                  width: 3,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF4ECDC4).withOpacity(0.3),
+                    blurRadius: 30,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: const Icon(
+                Icons.shield,
+                size: 60,
+                color: Color(0xFF4ECDC4),
+              ),
+            ),
+            const SizedBox(height: 28),
+            const Text(
+              'مرحباً! أنا "درع" مساعدك الذكي للأمن السيبراني\n'
+              'أقدم معلومات عملية وحديثة لحمايتك في العالم الرقمي',
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1B263B).withOpacity(0.7),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFF4ECDC4).withOpacity(0.3)),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4ECDC4).withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      'ما الذي يمكنني مساعدتك فيه؟',
+                      style: TextStyle(
+                        color: Color(0xFF4ECDC4),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _buildCategoryGrid(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blueGrey.shade900, Colors.blueGrey.shade800],
+                ),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Text(
+                'نصيحة اليوم:\n"المصادقة الثنائية هي أقوى خطوة لحماية حساباتك - فعّلها الآن!"',
+                style: TextStyle(
+                  color: Color(0xFF4ECDC4),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  height: 1.6,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
-
-  String _formatResponse(String title, List<String> points) {
-    StringBuffer sb = StringBuffer();
-    sb.writeln('**$title**\n');
-    for (String point in points) {
-      sb.writeln('• $point');
+  
+  Widget _buildCategoryGrid() {
+    final categories = _knowledgeBase.map((e) => e.category).toSet().toList();
+    return Wrap(
+      spacing: 10,
+      runSpacing: 10,
+      children: categories.take(6).map((category) {
+        return GestureDetector(
+          onTap: () {
+            _currentCategory = category;
+            _updateSuggestions();
+            setState(() {});
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: _getCategoryColor(category).withOpacity(0.15),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: _getCategoryColor(category).withOpacity(0.4),
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  _getCategoryIcon(category),
+                  size: 16,
+                  color: _getCategoryColor(category),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  category,
+                  style: TextStyle(
+                    color: _getCategoryColor(category),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+  
+  Widget _buildSuggestionChips() {
+    if (_suggestions.isEmpty) return const SizedBox.shrink();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      color: const Color(0xFF0F172A),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(right: 8, bottom: 8),
+            child: Text(
+              'اقتراحات سريعة:',
+              style: TextStyle(
+                color: Color(0xFF4ECDC4),
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: _suggestions.map((s) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  child: FilterChip(
+                    label: Text(
+                      s,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        height: 1.3,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    backgroundColor: const Color(0xFF1E293B),
+                    selectedColor: const Color(0xFF334155),
+                    checkmarkColor: const Color(0xFF4ECDC4),
+                    onSelected: (selected) {
+                      _controller.text = s;
+                      _sendMessage();
+                    },
+                    avatar: Icon(
+                      Icons.lightbulb_outline,
+                      size: 16,
+                      color: Colors.grey.shade400,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildInputField() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      color: const Color(0xFF0F172A),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E293B),
+                borderRadius: BorderRadius.circular(28),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.15),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _controller,
+                textDirection: TextDirection.rtl,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: 'اسأل عن: الحماية، الثغرات، المصادقة الثنائية...',
+                  hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 15),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.send_rounded, color: Color(0xFF4ECDC4)),
+                    onPressed: _sendMessage,
+                    iconSize: 26,
+                  ),
+                  prefixIcon: Container(
+                    padding: const EdgeInsets.only(left: 12),
+                    child: Icon(
+                      Icons.security,
+                      color: Colors.grey.shade600,
+                      size: 24,
+                    ),
+                  ),
+                ),
+                onSubmitted: (_) => _sendMessage(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
+  Widget _buildMessageBubble(String text, String sender) {
+    bool isUser = sender == 'user';
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.88,
+        ),
+        padding: EdgeInsets.symmetric(
+          horizontal: isUser ? 22 : 24,
+          vertical: 16,
+        ),
+        decoration: BoxDecoration(
+          gradient: isUser
+              ? LinearGradient(
+                  colors: [const Color(0xFF1E3A5F), const Color(0xFF15233A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  colors: [const Color(0xFF1B263B), const Color(0xFF0F172A)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(24),
+            topRight: const Radius.circular(24),
+            bottomLeft: isUser ? const Radius.circular(24) : const Radius.circular(8),
+            bottomRight: isUser ? const Radius.circular(8) : const Radius.circular(24),
+          ),
+          border: Border.all(
+            color: isUser
+                ? const Color(0xFF4ECDC4).withOpacity(0.5)
+                : Colors.white.withOpacity(0.1),
+            width: isUser ? 1.5 : 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: (isUser ? const Color(0xFF4ECDC4) : Colors.blueGrey)
+                  .withOpacity(isUser ? 0.2 : 0.15),
+              blurRadius: 12,
+              offset: Offset(0, isUser ? 4 : 6),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!isUser)
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4ECDC4).withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.shield,
+                      size: 16,
+                      color: Color(0xFF4ECDC4),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'درع - المساعد الأمني',
+                    style: TextStyle(
+                      color: Color(0xFF4ECDC4),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            if (!isUser) const SizedBox(height: 10),
+            Text(
+              text,
+              style: TextStyle(
+                color: isUser ? Colors.white : Colors.white.withOpacity(0.95),
+                fontSize: 16.5,
+                height: 1.6,
+                fontWeight: isUser ? FontWeight.w500 : FontWeight.w400,
+                letterSpacing: 0.2,
+              ),
+              textAlign: TextAlign.right,
+              textDirection: TextDirection.rtl            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  // مساعدين لواجهة المستخدم
+  Color _getCategoryColor(String category) {
+    switch (category) {
+      case 'الحماية': return const Color(0xFF4ECDC4);
+      case 'الثغرات': return const Color(0xFFFF6B6B);
+      case 'الهندسة الاجتماعية': return const Color(0xFFFFD166);
+      case 'التعليم': return const Color(0xFF6C63FF);
+      case 'الأمان العائلي': return const Color(0xFF06D6A0);
+      case 'الشبكات': return const Color(0xFF118AB2);
+      case 'أساسيات': return const Color(0xFF9B5DE5);
+      default: return Colors.blueGrey;
     }
-    sb.writeln('\n---\n🛡️ *تم الرد بواسطة **سيبرو** — صديقك الذكي في الأمن الرقمي 🤖*');
-    return sb.toString();
+  }
+  
+  IconData _getCategoryIcon(String category) {
+    switch (category) {
+      case 'الحماية': return Icons.lock;
+      case 'الثغرات': return Icons.bug_report;
+      case 'الهندسة الاجتماعية': return Icons.psychology;
+      case 'التعليم': return Icons.school;
+      case 'الأمان العائلي': return Icons.family_restroom;
+      case 'الشبكات': return Icons.wifi;
+      case 'أساسيات': return Icons.info;
+      default: return Icons.category;
+    }
   }
 }
